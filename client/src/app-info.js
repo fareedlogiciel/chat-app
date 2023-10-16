@@ -1,5 +1,4 @@
 const appInfo = {
-    title: 'App Name'
+  title: "Chat App",
 };
 export default appInfo;
-
