@@ -32,3 +32,54 @@
     }
   }
 }
+.user-navbar-container {
+  position: fixed;
+  width: 100%;
+  z-index: 99;
+
+  .user-navbar {
+    background-color: #edded1ad !important;
+
+    .user-name {
+      margin-left: 12px;
+      line-height: 23px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+  }
+}
+
+.message-list-container {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  overflow: auto;
+  height: calc(100vh - 260px);
+  top: 75px;
+}
+
+.rce-mbox-video--video {
+  max-width: 300px;
+}
+
+.react-input-emoji--input {
+  min-height: 100px !important;
+  max-height: 100px !important;
+}
+
+.d-none {
+  display: none;
+}
+
+.react-input-emoji--placeholder {
+  top: 10px !important;
+  left: 12px !important;
+  bottom: auto !important;
+}
+
+.message-input-container {
+  position: absolute;
+  bottom: 10px;
+  left: 0px;
+  right: 0px;
+}

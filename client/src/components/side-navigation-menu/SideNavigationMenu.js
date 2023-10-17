@@ -8,6 +8,7 @@ import { useScreenSize } from "../../utils/media-query";
 import "./SideNavigationMenu.scss";
 import * as events from "devextreme/events";
 import { ChatList } from "react-chat-elements";
+import ScrollView from "devextreme-react/scroll-view";
 
 export default function SideNavigationMenu(props) {
   const { children, selectedItemChanged, openMenu, compactMode, onMenuReady } =
@@ -68,8 +69,9 @@ export default function SideNavigationMenu(props) {
       ref={getWrapperRef}
     >
       {children}
-      <div className={"menu-container"}>
-        {/* <TreeView
+      <ScrollView>
+        <div className={"menu-container"}>
+          {/* <TreeView
           ref={treeViewRef}
           items={items}
           keyExpr={"path"}
@@ -80,174 +82,175 @@ export default function SideNavigationMenu(props) {
           onContentReady={onMenuReady}
           width={"100%"}
         /> */}
-        <ChatList
-          className="chat-list"
-          dataSource={[
-            {
-              avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
-              alt: "kursat_avatar",
-              title: "Kursat",
-              subtitle:
-                "Why don't we go to the No Way Home movie this weekend ?",
-              date: new Date("2023/10/16 16:12"),
-              unread: 3,
-            },
-            {
-              avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
-              alt: "kursat_avatar",
-              title: "Kursat",
-              subtitle:
-                "Why don't we go to the No Way Home movie this weekend ?",
-              date: new Date(),
-              unread: 2,
-            },
-            {
-              avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
-              alt: "kursat_avatar",
-              title: "Kursat",
-              subtitle:
-                "Why don't we go to the No Way Home movie this weekend ?",
-              date: new Date(),
-              unread: 3,
-            },
-            {
-              avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
-              alt: "kursat_avatar",
-              title: "Kursat",
-              subtitle:
-                "Why don't we go to the No Way Home movie this weekend ?",
-              date: new Date(),
-              unread: 5,
-            },
-            {
-              avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
-              alt: "kursat_avatar",
-              title: "Kursat",
-              subtitle:
-                "Why don't we go to the No Way Home movie this weekend ?",
-              date: new Date(),
-              unread: 1,
-            },
-            {
-              avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
-              alt: "kursat_avatar",
-              title: "Kursat",
-              subtitle:
-                "Why don't we go to the No Way Home movie this weekend ?",
-              date: new Date(),
-              unread: 3,
-            },
-            {
-              avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
-              alt: "kursat_avatar",
-              title: "Kursat",
-              subtitle:
-                "Why don't we go to the No Way Home movie this weekend ?",
-              date: new Date(),
-              unread: 3,
-            },
-            {
-              avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
-              alt: "kursat_avatar",
-              title: "Kursat",
-              subtitle:
-                "Why don't we go to the No Way Home movie this weekend ?",
-              date: new Date(),
-              unread: 3,
-            },
-            {
-              avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
-              alt: "kursat_avatar",
-              title: "Kursat",
-              subtitle:
-                "Why don't we go to the No Way Home movie this weekend ?",
-              date: new Date(),
-              unread: 3,
-            },
-            {
-              avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
-              alt: "kursat_avatar",
-              title: "Kursat",
-              subtitle:
-                "Why don't we go to the No Way Home movie this weekend ?",
-              date: new Date(),
-              unread: 3,
-            },
-            {
-              avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
-              alt: "kursat_avatar",
-              title: "Kursat",
-              subtitle:
-                "Why don't we go to the No Way Home movie this weekend ?",
-              date: new Date(),
-              unread: 3,
-            },
-            {
-              avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
-              alt: "kursat_avatar",
-              title: "Kursat",
-              subtitle:
-                "Why don't we go to the No Way Home movie this weekend ?",
-              date: new Date(),
-              unread: 3,
-            },
-            {
-              avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
-              alt: "kursat_avatar",
-              title: "Kursat",
-              subtitle:
-                "Why don't we go to the No Way Home movie this weekend ?",
-              date: new Date(),
-              unread: 3,
-            },
-            {
-              avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
-              alt: "kursat_avatar",
-              title: "Kursat",
-              subtitle:
-                "Why don't we go to the No Way Home movie this weekend ?",
-              date: new Date(),
-              unread: 3,
-            },
-            {
-              avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
-              alt: "kursat_avatar",
-              title: "Kursat",
-              subtitle:
-                "Why don't we go to the No Way Home movie this weekend ?",
-              date: new Date(),
-              unread: 3,
-            },
-            {
-              avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
-              alt: "kursat_avatar",
-              title: "Kursat",
-              subtitle:
-                "Why don't we go to the No Way Home movie this weekend ?",
-              date: new Date(),
-              unread: 3,
-            },
-            {
-              avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
-              alt: "kursat_avatar",
-              title: "Kursat",
-              subtitle:
-                "Why don't we go to the No Way Home movie this weekend ?",
-              date: new Date(),
-              unread: 3,
-            },
-            {
-              avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
-              alt: "kursat_avatar",
-              title: "Kursat",
-              subtitle:
-                "Why don't we go to the No Way Home movie this weekend ?",
-              date: new Date(),
-              unread: 3,
-            },
-          ]}
-        />
-      </div>
+          <ChatList
+            className="chat-list"
+            dataSource={[
+              {
+                avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
+                alt: "kursat_avatar",
+                title: "Kursat",
+                subtitle:
+                  "Why don't we go to the No Way Home movie this weekend ?",
+                date: new Date("2023/10/16 16:12"),
+                unread: 3,
+              },
+              {
+                avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
+                alt: "kursat_avatar",
+                title: "Kursat",
+                subtitle:
+                  "Why don't we go to the No Way Home movie this weekend ?",
+                date: new Date(),
+                unread: 2,
+              },
+              {
+                avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
+                alt: "kursat_avatar",
+                title: "Kursat",
+                subtitle:
+                  "Why don't we go to the No Way Home movie this weekend ?",
+                date: new Date(),
+                unread: 3,
+              },
+              {
+                avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
+                alt: "kursat_avatar",
+                title: "Kursat",
+                subtitle:
+                  "Why don't we go to the No Way Home movie this weekend ?",
+                date: new Date(),
+                unread: 5,
+              },
+              {
+                avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
+                alt: "kursat_avatar",
+                title: "Kursat",
+                subtitle:
+                  "Why don't we go to the No Way Home movie this weekend ?",
+                date: new Date(),
+                unread: 1,
+              },
+              {
+                avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
+                alt: "kursat_avatar",
+                title: "Kursat",
+                subtitle:
+                  "Why don't we go to the No Way Home movie this weekend ?",
+                date: new Date(),
+                unread: 3,
+              },
+              {
+                avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
+                alt: "kursat_avatar",
+                title: "Kursat",
+                subtitle:
+                  "Why don't we go to the No Way Home movie this weekend ?",
+                date: new Date(),
+                unread: 3,
+              },
+              {
+                avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
+                alt: "kursat_avatar",
+                title: "Kursat",
+                subtitle:
+                  "Why don't we go to the No Way Home movie this weekend ?",
+                date: new Date(),
+                unread: 3,
+              },
+              {
+                avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
+                alt: "kursat_avatar",
+                title: "Kursat",
+                subtitle:
+                  "Why don't we go to the No Way Home movie this weekend ?",
+                date: new Date(),
+                unread: 3,
+              },
+              {
+                avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
+                alt: "kursat_avatar",
+                title: "Kursat",
+                subtitle:
+                  "Why don't we go to the No Way Home movie this weekend ?",
+                date: new Date(),
+                unread: 3,
+              },
+              {
+                avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
+                alt: "kursat_avatar",
+                title: "Kursat",
+                subtitle:
+                  "Why don't we go to the No Way Home movie this weekend ?",
+                date: new Date(),
+                unread: 3,
+              },
+              {
+                avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
+                alt: "kursat_avatar",
+                title: "Kursat",
+                subtitle:
+                  "Why don't we go to the No Way Home movie this weekend ?",
+                date: new Date(),
+                unread: 3,
+              },
+              {
+                avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
+                alt: "kursat_avatar",
+                title: "Kursat",
+                subtitle:
+                  "Why don't we go to the No Way Home movie this weekend ?",
+                date: new Date(),
+                unread: 3,
+              },
+              {
+                avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
+                alt: "kursat_avatar",
+                title: "Kursat",
+                subtitle:
+                  "Why don't we go to the No Way Home movie this weekend ?",
+                date: new Date(),
+                unread: 3,
+              },
+              {
+                avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
+                alt: "kursat_avatar",
+                title: "Kursat",
+                subtitle:
+                  "Why don't we go to the No Way Home movie this weekend ?",
+                date: new Date(),
+                unread: 3,
+              },
+              {
+                avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
+                alt: "kursat_avatar",
+                title: "Kursat",
+                subtitle:
+                  "Why don't we go to the No Way Home movie this weekend ?",
+                date: new Date(),
+                unread: 3,
+              },
+              {
+                avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
+                alt: "kursat_avatar",
+                title: "Kursat",
+                subtitle:
+                  "Why don't we go to the No Way Home movie this weekend ?",
+                date: new Date(),
+                unread: 3,
+              },
+              {
+                avatar: "https://avatars.githubusercontent.com/u/80540635?v=4",
+                alt: "kursat_avatar",
+                title: "Kursat",
+                subtitle:
+                  "Why don't we go to the No Way Home movie this weekend ?",
+                date: new Date(),
+                unread: 3,
+              },
+            ]}
+          />
+        </div>
+      </ScrollView>
     </div>
   );
 }

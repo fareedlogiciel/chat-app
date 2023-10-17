@@ -77,19 +77,19 @@ export default function SideNavOuterToolbar({ title, children }) {
         opened={menuStatus === MenuStatus.Closed ? false : true}
         template={"menu"}
       >
-        <div className={"container"}>
-          <ScrollView ref={scrollViewRef} className={"layout-body with-footer"}>
-            <div className={"content"}>
-              {React.Children.map(children, (item) => {
-                return item.type !== Footer && item;
-              })}
-            </div>
-            <div className={"content-block"}>
-              {React.Children.map(children, (item) => {
-                return item.type === Footer && item;
-              })}
-            </div>
-          </ScrollView>
+        <div className={"container bg-chat"}>
+          {/* <ScrollView ref={scrollViewRef} className={"layout-body with-footer"}> */}
+          <div className={"content"}>
+            {React.Children.map(children, (item) => {
+              return item.type !== Footer && item;
+            })}
+          </div>
+          <div className={"content-block"}>
+            {React.Children.map(children, (item) => {
+              return item.type === Footer && item;
+            })}
+          </div>
+          {/* </ScrollView> */}
         </div>
         <Template name={"menu"}>
           <SideNavigationMenu
