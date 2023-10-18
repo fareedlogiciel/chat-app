@@ -5,11 +5,10 @@ const bodyParser = require("body-parser");
 const authRoutes = require("./api/routes/auth");
 const app = express();
 const mongoose = require("mongoose");
-const { MONGO_ATLAS_PASSWORD } = require("./env-constants");
-const mongoURI = `mongodb+srv://fareedalam:${MONGO_ATLAS_PASSWORD}@cluster0.eohtahh.mongodb.net/?retryWrites=true&w=majority`;
+const { MONGO_ATLAS_URI } = require("./env-constants");
 
 // Connecting MongoDB
-mongoose.connect(mongoURI);
+mongoose.connect(MONGO_ATLAS_URI);
 
 // For logging requests
 app.use(morgan("dev"));

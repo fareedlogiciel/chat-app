@@ -29,12 +29,18 @@ router.post("/signup", (req, res) => {
               email,
               password: hash,
             });
+            const userData = {
+              _id: user?._id,
+              name: user?.name,
+              email: user?.email,
+            };
             user
               .save()
-              .then((result) => {
-                return res
-                  .status(201)
-                  .json({ message: "User created.", user: result });
+              .then(() => {
+                return res.status(201).json({
+                  message: "User created successfully!",
+                  user: userData,
+                });
               })
               .catch((error) => {
                 return res.status(500).json({ error });
@@ -56,9 +62,9 @@ router.post("/login", (req, res) => {
     .exec()
     .then((user) => {
       if (user?.length < 1) {
-        return res
-          .status(404)
-          .json({ message: "User with this email does not exists!" });
+        return res.status(401).json({
+          message: "Login failed! Please try again with different credentials",
+        });
       } else {
         bcrypt.compare(password, user[0].password, (err, result) => {
           if (err || !result) {
@@ -84,7 +90,7 @@ router.post("/login", (req, res) => {
             };
             return res
               .status(200)
-              .json({ message: "Logged in successfully!", userData });
+              .json({ message: "Logged in successfully!", user: userData });
           }
         });
       }
