@@ -3,12 +3,14 @@ import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import ContextMenu, { Position } from "devextreme-react/context-menu";
 import List from "devextreme-react/list";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./UserPanel.scss";
+import { logout } from "../../store/reducers/auth";
 
 export default function UserPanel({ menuMode }) {
   const { user } = useSelector((state) => state?.auth);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   function navigateToProfile() {
     navigate("/profile");
@@ -23,12 +25,10 @@ export default function UserPanel({ menuMode }) {
       {
         text: "Logout",
         icon: "runner",
-        // onClick: signOut,
+        onClick: () => dispatch(logout()),
       },
     ],
-    [
-      // signOut
-    ]
+    []
   );
 
   return (

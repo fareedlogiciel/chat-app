@@ -12,8 +12,12 @@ const authSlice = createSlice({
     setUserOnStore: (state, action) => {
       state.user = structuredClone(action?.payload);
     },
+    logout: (state) => {
+      state.user = null;
+      console.log("state at reducer", state);
+    },
   },
 });
 
-export const { setUserOnStore } = authSlice?.actions;
+export const { setUserOnStore, logout } = authSlice?.actions;
 export default authSlice?.reducer;
