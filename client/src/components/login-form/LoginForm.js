@@ -1,6 +1,5 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useRef, useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Form, {
   Item,
   Label,
@@ -11,30 +10,32 @@ import Form, {
 } from "devextreme-react/form";
 import LoadIndicator from "devextreme-react/load-indicator";
 import notify from "devextreme/ui/notify";
-import { useAuth } from "../../contexts/auth";
-
 import "./LoginForm.scss";
+import { signIn } from "../../services/auth";
+import { useDispatch } from "react-redux";
+import { setUserOnStore } from "./../../store/reducers/auth";
 
 export default function LoginForm() {
   const navigate = useNavigate();
-  const { signIn } = useAuth();
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const formData = useRef({ email: "", password: "" });
+  const formData = useRef({ email: "test1@gmail.com", password: "12345678" });
 
-  const onSubmit = useCallback(
-    async (e) => {
-      e.preventDefault();
-      const { email, password } = formData.current;
+  const onSubmit = async (e) => {
+    try {
+      e?.preventDefault();
       setLoading(true);
-
-      const result = await signIn(email, password);
-      if (!result.isOk) {
-        setLoading(false);
-        notify(result.message, "error", 2000);
-      }
-    },
-    [signIn]
-  );
+      const { email, password } = formData.current;
+      const data = { email, password };
+      const result = await signIn(data);
+      dispatch(setUserOnStore(result?.data));
+      notify(result?.message, result?.isOk ? "success" : "error", 2000);
+      setLoading(false);
+    } catch {
+      setLoading(false);
+      notify("Auth failed. Please try again!", "error", 2000);
+    }
+  };
 
   const onCreateAccountClick = useCallback(() => {
     navigate("/create-account");
@@ -109,7 +110,7 @@ const passwordEditorOptions = {
   placeholder: "Password",
   mode: "password",
 };
-const rememberMeEditorOptions = {
-  text: "Remember me",
-  elementAttr: { class: "form-text" },
-};
+// const rememberMeEditorOptions = {
+//   text: "Remember me",
+//   elementAttr: { class: "form-text" },
+// };

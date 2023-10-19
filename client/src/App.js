@@ -7,20 +7,18 @@ import { BrowserRouter as Router } from "react-router-dom";
 import "./dx-styles.scss";
 import LoadPanel from "devextreme-react/load-panel";
 import { NavigationProvider } from "./contexts/navigation";
-import { AuthProvider, useAuth } from "./contexts/auth";
+import { AuthProvider } from "./contexts/auth";
 import { useScreenSizeClass } from "./utils/media-query";
 import Content from "./Content";
 import UnauthenticatedContent from "./UnauthenticatedContent";
-import { REACT_APP_API_BASE_URL } from "./env-constants";
+import { useSelector } from "react-redux";
 // import { config } from "dotenv";
 // config();
 
 // require("dotenv")?.config();
 
-console.log("REACT_APP_API_BASE_URL", REACT_APP_API_BASE_URL);
-
 function App() {
-  const { user, loading } = useAuth();
+  const { loading, user } = useSelector((state) => state?.auth);
 
   if (loading) {
     return <LoadPanel visible={true} />;

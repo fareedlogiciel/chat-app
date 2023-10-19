@@ -1,8 +1,8 @@
 import axios from "axios";
-import { API_BASE_URL } from "../env-constants";
+import { REACT_APP_API_BASE_URL } from "../env-constants";
 
 const request = async (method, endpoint, body, withAuth, headers) => {
-  const url = `${API_BASE_URL}/${endpoint}`;
+  const url = `${REACT_APP_API_BASE_URL}/${endpoint}`;
   const token = "";
   const config = {
     headers: {
@@ -10,9 +10,11 @@ const request = async (method, endpoint, body, withAuth, headers) => {
       ...headers,
     },
   };
+
   if (withAuth && token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
   switch (method) {
     case "get":
       return axios.get(url, config);
@@ -27,28 +29,20 @@ const request = async (method, endpoint, body, withAuth, headers) => {
   }
 };
 
-export const getRequest = (endpoint, withAuth = true, headers = {}) => {
-  request("get", endpoint, {}, withAuth, headers);
+const getRequest = (endpoint, withAuth = true, headers = {}) => {
+  return request("get", endpoint, {}, withAuth, headers);
 };
 
-export const postRequest = (
-  endpoint,
-  body = {},
-  withAuth = true,
-  headers = {}
-) => {
-  request("post", endpoint, body, withAuth, headers);
+const postRequest = (endpoint, body = {}, withAuth = true, headers = {}) => {
+  return request("post", endpoint, body, withAuth, headers);
 };
 
-export const patchRequest = (
-  endpoint,
-  body = {},
-  withAuth = true,
-  headers = {}
-) => {
-  request("patch", endpoint, body, withAuth, headers);
+const patchRequest = (endpoint, body = {}, withAuth = true, headers = {}) => {
+  return request("patch", endpoint, body, withAuth, headers);
 };
 
-export const deleteRequest = (endpoint, withAuth = true, headers = {}) => {
-  request("delete", endpoint, {}, withAuth, headers);
+const deleteRequest = (endpoint, withAuth = true, headers = {}) => {
+  return request("delete", endpoint, {}, withAuth, headers);
 };
+
+export { getRequest, postRequest, patchRequest, deleteRequest };

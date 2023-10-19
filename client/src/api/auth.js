@@ -1,21 +1,27 @@
+import { postRequest } from "../requests";
 import defaultUser from "../utils/default-user";
+import { apiEndpoints } from "./endpoints.js/index.js";
 
-export async function signIn(email, password) {
+export const signIn = async (data) => {
   try {
     // Send request
-    console.log(email, password);
-
-    return {
-      isOk: true,
-      data: defaultUser,
-    };
-  } catch {
-    return {
+    const endpoint = apiEndpoints.login;
+    const withAuth = false;
+    const response = await postRequest(endpoint, data, withAuth);
+    if (response && response?.data?.user) {
+      return Promise.resolve({
+        isOk: true,
+        message: response?.data?.message,
+        data: structuredClone(response?.data?.user),
+      });
+    }
+  } catch (err) {
+    return Promise.reject({
       isOk: false,
       message: "Authentication failed",
-    };
+    });
   }
-}
+};
 
 export async function getUser() {
   try {
