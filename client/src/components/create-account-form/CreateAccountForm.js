@@ -47,20 +47,26 @@ export default function CreateAccountForm() {
 
   const onSubmit = useCallback(
     async (e) => {
-      e.preventDefault();
-      const { username, email, password } = formData.current;
-      const data = {
-        email,
-        password,
-        username,
-      };
       setLoading(true);
-      const result = await register(data);
-      setLoading(false);
-      if (result.isOk) {
-        navigate("/login");
-      } else {
-        notify(result.message, "error", 2000);
+      try {
+        e.preventDefault();
+        const { username, email, password } = formData.current;
+        const data = {
+          email,
+          password,
+          name: username,
+        };
+        const result = await register(data);
+        setLoading(false);
+        if (result.isOk) {
+          notify(result.message, "success", 2000);
+          navigate("/login");
+        } else {
+          notify(result.message, "error", 2000);
+        }
+      } catch (err) {
+        setLoading(false);
+        notify(err?.message, "error", 2000);
       }
     },
     [navigate]
@@ -111,11 +117,24 @@ export default function CreateAccountForm() {
           />
           <Label visible={false} />
         </Item>
-        {/* <Item>
-          <div className='policy-info'>
-            By creating an account, you agree to the <Link to="#">Terms of Service</Link> and <Link to="#">Privacy Policy</Link>
+        <Item>
+          <div className="policy-info">
+            By creating an account, you agree to the{" "}
+            <Link
+              target="_blank"
+              to="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+            >
+              Terms of Service
+            </Link>{" "}
+            and{" "}
+            <Link
+              target="_blank"
+              to="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+            >
+              Privacy Policy
+            </Link>
           </div>
-        </Item> */}
+        </Item>
         <ButtonItem>
           <ButtonOptions
             width={"100%"}

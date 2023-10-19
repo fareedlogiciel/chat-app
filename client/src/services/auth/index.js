@@ -13,34 +13,30 @@ export const signIn = async (data) => {
         data: structuredClone(response?.data?.user),
       });
     }
-  } catch {
+  } catch (err) {
     return Promise.reject({
       isOk: false,
-      message: "Authentication failed",
+      message: err?.response?.data?.message,
       data: null,
     });
   }
 };
 
 export const register = async (data) => {
-  console.log("data", data);
   try {
     const withAuth = false;
     const endpoint = apiEndpoints.register;
     const response = await postRequest(endpoint, data, withAuth);
-    console.log("response", response);
-    // if (response && response?.data?.user) {
-    //   return Promise.resolve({
-    //     isOk: true,
-    //     message: response?.data?.message,
-    //     data: structuredClone(response?.data?.user),
-    //   });
-    // }
-  } catch {
+    if (response && response?.data?.user) {
+      return Promise.resolve({
+        isOk: true,
+        message: response?.data?.message,
+      });
+    }
+  } catch (err) {
     return Promise.reject({
       isOk: false,
-      message: "Authentication failed",
-      data: null,
+      message: err?.response?.data?.message,
     });
   }
 };

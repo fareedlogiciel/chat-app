@@ -31,9 +31,9 @@ export default function LoginForm() {
       dispatch(setUserOnStore(result?.data));
       notify(result?.message, result?.isOk ? "success" : "error", 2000);
       setLoading(false);
-    } catch {
+    } catch (err) {
       setLoading(false);
-      notify("Auth failed. Please try again!", "error", 2000);
+      notify(err?.message, "error", 2000);
     }
   };
 
