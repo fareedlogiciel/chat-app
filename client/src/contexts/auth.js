@@ -13,7 +13,6 @@ function AuthProvider(props) {
   const [loading, setLoading] = useState(false);
   const state = useSelector((state) => state);
   const dispatch = useDispatch();
-  console.log("state", state);
 
   // useEffect(() => {
   //   (async function () {

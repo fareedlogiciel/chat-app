@@ -2,10 +2,14 @@ require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
-const authRoutes = require("./api/routes/auth");
 const app = express();
 const mongoose = require("mongoose");
 const { MONGO_ATLAS_URI } = require("./env-constants");
+
+// All routes
+const authRoutes = require("./api/routes/auth");
+const conversationRoutes = require("./api/routes/conversation");
+const messageRoutes = require("./api/routes/message");
 
 // Connecting MongoDB
 mongoose.connect(MONGO_ATLAS_URI);
@@ -33,7 +37,9 @@ app.use((req, res, next) => {
 });
 
 // Routes which should handle requests
-app.use("/auth", authRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/conversations", conversationRoutes);
+app.use("/api/messages", messageRoutes);
 
 // Handling errors
 app.use((req, res, next) => {

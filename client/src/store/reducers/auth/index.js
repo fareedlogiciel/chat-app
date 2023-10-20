@@ -14,7 +14,6 @@ const authSlice = createSlice({
     },
     logout: (state) => {
       state.user = null;
-      console.log("state at reducer", state);
     },
   },
 });

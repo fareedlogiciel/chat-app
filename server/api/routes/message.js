@@ -1,12 +1,9 @@
 const express = require("express");
 const router = express.Router();
+const messageController = require("../controllers/message");
 
-router.get("/messages", (req, res) => {
-  const messages = [
-    { name: "Tim", message: "yo" },
-    { name: "Pam", message: "hi" },
-  ];
-  res.status(200).send(messages);
-});
+router.post("/new", messageController.new_message);
+router.get("/", messageController.get_all_messages);
+router.get("/:conversation_id", messageController.get_messages_by_con_id);
 
 module.exports = router;
