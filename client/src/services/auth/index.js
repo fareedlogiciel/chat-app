@@ -17,7 +17,6 @@ export const signIn = async (data) => {
     return Promise.reject({
       isOk: false,
       message: err?.response?.data?.message,
-      data: null,
     });
   }
 };

@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Drawer from "devextreme-react/drawer";
-import ScrollView from "devextreme-react/scroll-view";
 import React, { useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router";
 import { Header, SideNavigationMenu, Footer } from "../../components";
@@ -78,7 +77,6 @@ export default function SideNavOuterToolbar({ title, children }) {
         template={"menu"}
       >
         <div className={"container bg-chat"}>
-          {/* <ScrollView ref={scrollViewRef} className={"layout-body with-footer"}> */}
           <div className={"content"}>
             {React.Children.map(children, (item) => {
               return item.type !== Footer && item;
@@ -89,7 +87,6 @@ export default function SideNavOuterToolbar({ title, children }) {
               return item.type === Footer && item;
             })}
           </div>
-          {/* </ScrollView> */}
         </div>
         <Template name={"menu"}>
           <SideNavigationMenu

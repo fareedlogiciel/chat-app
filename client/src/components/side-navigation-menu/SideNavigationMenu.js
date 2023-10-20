@@ -9,10 +9,18 @@ import "./SideNavigationMenu.scss";
 import * as events from "devextreme/events";
 import { ChatList } from "react-chat-elements";
 import ScrollView from "devextreme-react/scroll-view";
+import { fetchConversations } from "../../services/conversation";
+import { setConversationsOnStore } from "../../store/reducers/app";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function SideNavigationMenu(props) {
+  const dispatch = useDispatch();
+  const { auth, app } = useSelector((state) => state);
+  const { user } = auth;
   const { children, selectedItemChanged, openMenu, compactMode, onMenuReady } =
     props;
+
+  console.log("app", app);
 
   // const { isLarge } = useScreenSize();
   // function normalizePath() {
@@ -61,6 +69,19 @@ export default function SideNavigationMenu(props) {
       treeView.collapseAll();
     }
   }, [currentPath, compactMode]);
+
+  const getConversations = useCallback(async () => {
+    try {
+      const { conversations } = await fetchConversations(user?._id);
+      dispatch(setConversationsOnStore(conversations));
+    } catch (err) {
+      console.error("Error (While fetching conversations): ", err);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    getConversations();
+  }, [getConversations]);
 
   return (
     <div
