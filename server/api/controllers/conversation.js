@@ -44,37 +44,12 @@ module.exports.get_conversations_by_user_id = async (req, res) => {
           ],
         },
         { _id: 1, sender: 1, receiver: 1 }
-      );
+      ).populate({
+        path: "sender receiver",
+        select: { _id: 1, name: 1, email: 1 },
+      });
 
-      const formattedConversations = conversations?.map(
-        async (conversation) => {
-          if (conversation?.sender === req?.params?.user_id) {
-            const user = await User.findOne(
-              { _id: conversation?.receiver },
-              { _id: 1, name: 1, email: 1 }
-            );
-            console.log("conversation", conversation);
-            console.log("user 1", user);
-            return {
-              user,
-              ...conversation,
-            };
-          } else {
-            const user = await User.findOne(
-              { _id: conversation?.sender },
-              { _id: 1, name: 1, email: 1 }
-            );
-            console.log("conversation", conversation);
-            console.log("user 2", user);
-            return {
-              user,
-              ...conversation,
-            };
-          }
-        }
-      );
-      return res.status(200).json(formattedConversations);
-      // return res.status(200).json(conversations);
+      return res.status(200).json(conversations);
     } catch (err) {
       return res.status(500).json({ err });
     }
