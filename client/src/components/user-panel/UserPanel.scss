@@ -16,11 +16,18 @@
     width: 30px;
     margin: 0 4px;
     border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 
     .user-image {
       width: 100%;
       height: 100%;
+      background-size: cover;
+      background-color: green;
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 
@@ -53,7 +60,7 @@
     margin-right: 16px;
   }
   .dx-menu-item .dx-menu-item-content {
-      padding: 3px 15px 4px;
+    padding: 3px 15px 4px;
   }
 }
 

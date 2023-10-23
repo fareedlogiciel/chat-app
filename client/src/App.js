@@ -7,7 +7,6 @@ import { BrowserRouter as Router } from "react-router-dom";
 import "./dx-styles.scss";
 import LoadPanel from "devextreme-react/load-panel";
 import { NavigationProvider } from "./contexts/navigation";
-import { AuthProvider } from "./contexts/auth";
 import { useScreenSizeClass } from "./utils/media-query";
 import Content from "./Content";
 import UnauthenticatedContent from "./UnauthenticatedContent";
@@ -36,13 +35,11 @@ export default function Root() {
 
   return (
     <Router>
-      <AuthProvider>
-        <NavigationProvider>
-          <div className={`app ${screenSizeClass}`}>
-            <App />
-          </div>
-        </NavigationProvider>
-      </AuthProvider>
+      <NavigationProvider>
+        <div className={`app ${screenSizeClass}`}>
+          <App />
+        </div>
+      </NavigationProvider>
     </Router>
   );
 }

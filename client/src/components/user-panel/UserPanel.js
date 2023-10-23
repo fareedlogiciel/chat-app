@@ -1,20 +1,26 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import ContextMenu, { Position } from "devextreme-react/context-menu";
 import List from "devextreme-react/list";
 import { useDispatch, useSelector } from "react-redux";
 import "./UserPanel.scss";
-import { logout } from "../../store/reducers/auth";
+import { resetAuth } from "../../store/reducers/auth";
+import { resetApp } from "../../store/reducers/app";
 
 export default function UserPanel({ menuMode }) {
   const { user } = useSelector((state) => state?.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  function navigateToProfile() {
+  const navigateToProfile = useCallback(() => {
     navigate("/profile");
-  }
+  }, [navigate]);
+
+  const onLogout = useCallback(() => {
+    dispatch(resetAuth());
+    dispatch(resetApp());
+  }, [dispatch]);
+
   const menuItems = useMemo(
     () => [
       {
@@ -25,32 +31,17 @@ export default function UserPanel({ menuMode }) {
       {
         text: "Logout",
         icon: "runner",
-        onClick: () => dispatch(logout()),
+        onClick: onLogout,
       },
     ],
-    []
+    [navigateToProfile, onLogout]
   );
 
   return (
     <div className={"user-panel"}>
       <div className={"user-info"}>
         <div className={"image-container"}>
-          <div
-            style={{
-              // background: `url(${"https://avatars.githubusercontent.com/u/80540635?v=4"}) no-repeat #fff`,
-              backgroundSize: "cover",
-              backgroundColor: "green",
-              color: "#fff",
-              fontSize: 20,
-              fontWeight: "500",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            className={"user-image"}
-          >
-            {user?.name?.at(0) || ""}
-          </div>
+          <div className={"user-image"}>{user?.name?.at(0) || ""}</div>
         </div>
         <div className={"user-name"}>{user?.name}</div>
       </div>

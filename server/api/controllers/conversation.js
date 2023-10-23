@@ -43,11 +43,13 @@ module.exports.get_conversations_by_user_id = async (req, res) => {
             { receiver: req?.params?.user_id },
           ],
         },
-        { _id: 1, sender: 1, receiver: 1 }
-      ).populate({
-        path: "sender receiver",
-        select: { _id: 1, name: 1, email: 1 },
-      });
+        { _id: 1, sender: 1, receiver: 1, createdAt: 1 }
+      )
+        .sort({ createdAt: -1 })
+        .populate({
+          path: "sender receiver",
+          select: { _id: 1, name: 1, email: 1 },
+        });
 
       return res.status(200).json(conversations);
     } catch (err) {

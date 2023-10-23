@@ -12,11 +12,11 @@ const authSlice = createSlice({
     setUserOnStore: (state, action) => {
       state.user = structuredClone(action?.payload);
     },
-    logout: (state) => {
-      state.user = null;
+    resetAuth: () => {
+      return { ...initialState };
     },
   },
 });
 
-export const { setUserOnStore, logout } = authSlice?.actions;
+export const { setUserOnStore, resetAuth } = authSlice?.actions;
 export default authSlice?.reducer;
