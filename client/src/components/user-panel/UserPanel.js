@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import ContextMenu, { Position } from "devextreme-react/context-menu";
@@ -23,18 +24,18 @@ export default function UserPanel({ menuMode }) {
 
   const menuItems = useMemo(
     () => [
-      {
-        text: "Profile",
-        icon: "user",
-        onClick: navigateToProfile,
-      },
+      // {
+      //   text: "Profile",
+      //   icon: "user",
+      //   onClick: navigateToProfile,
+      // },
       {
         text: "Logout",
         icon: "runner",
         onClick: onLogout,
       },
     ],
-    [navigateToProfile, onLogout]
+    [onLogout]
   );
 
   return (

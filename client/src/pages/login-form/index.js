@@ -13,7 +13,8 @@ import notify from "devextreme/ui/notify";
 import "./LoginForm.scss";
 import { signIn } from "../../services/auth";
 import { useDispatch } from "react-redux";
-import { setUserOnStore } from "./../../store/reducers/auth";
+import { setUserOnStore } from "../../store/reducers/auth";
+import { SingleCard } from "../../layouts";
 
 export default function LoginForm() {
   const navigate = useNavigate();
@@ -31,6 +32,7 @@ export default function LoginForm() {
       dispatch(setUserOnStore(result?.data));
       notify(result?.message, result?.isOk ? "success" : "error", 2000);
       setLoading(false);
+      navigate("/");
     } catch (err) {
       setLoading(false);
       notify(err?.message, "error", 2000);
@@ -42,61 +44,67 @@ export default function LoginForm() {
   }, [navigate]);
 
   return (
-    <form className={"login-form"} onSubmit={onSubmit}>
-      <Form formData={formData.current} disabled={loading}>
-        <Item
-          dataField={"email"}
-          editorType={"dxTextBox"}
-          editorOptions={emailEditorOptions}
-        >
-          <RequiredRule message="Email is required" />
-          <EmailRule message="Email is invalid" />
-          <Label visible={false} />
-        </Item>
-        <Item
-          dataField={"password"}
-          editorType={"dxTextBox"}
-          editorOptions={passwordEditorOptions}
-        >
-          <RequiredRule message="Password is required" />
-          <Label visible={false} />
-        </Item>
-        {/* <Item
+    <SingleCard title="Sign In">
+      <form className={"login-form"} onSubmit={onSubmit}>
+        <Form formData={formData.current} disabled={loading}>
+          <Item
+            dataField={"email"}
+            editorType={"dxTextBox"}
+            editorOptions={emailEditorOptions}
+          >
+            <RequiredRule message="Email is required" />
+            <EmailRule message="Email is invalid" />
+            <Label visible={false} />
+          </Item>
+          <Item
+            dataField={"password"}
+            editorType={"dxTextBox"}
+            editorOptions={passwordEditorOptions}
+          >
+            <RequiredRule message="Password is required" />
+            <Label visible={false} />
+          </Item>
+          {/* <Item
           dataField={"rememberMe"}
           editorType={"dxCheckBox"}
           editorOptions={rememberMeEditorOptions}
         >
           <Label visible={false} />
         </Item> */}
-        <ButtonItem>
-          <ButtonOptions
-            width={"100%"}
-            type={"default"}
-            useSubmitBehavior={true}
-          >
-            <span className="dx-button-text">
-              {loading ? (
-                <LoadIndicator width={"24px"} height={"24px"} visible={true} />
-              ) : (
-                "Sign In"
-              )}
-            </span>
-          </ButtonOptions>
-        </ButtonItem>
-        {/* <Item>
+          <ButtonItem>
+            <ButtonOptions
+              width={"100%"}
+              type={"default"}
+              useSubmitBehavior={true}
+            >
+              <span className="dx-button-text">
+                {loading ? (
+                  <LoadIndicator
+                    width={"24px"}
+                    height={"24px"}
+                    visible={true}
+                  />
+                ) : (
+                  "Sign In"
+                )}
+              </span>
+            </ButtonOptions>
+          </ButtonItem>
+          {/* <Item>
           <div className={"link"}>
             <Link to={"/reset-password"}>Forgot password?</Link>
           </div>
         </Item> */}
-        <ButtonItem>
-          <ButtonOptions
-            text={"Create an account"}
-            width={"100%"}
-            onClick={onCreateAccountClick}
-          />
-        </ButtonItem>
-      </Form>
-    </form>
+          <ButtonItem>
+            <ButtonOptions
+              text={"Create an account"}
+              width={"100%"}
+              onClick={onCreateAccountClick}
+            />
+          </ButtonItem>
+        </Form>
+      </form>
+    </SingleCard>
   );
 }
 
