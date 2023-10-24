@@ -5,10 +5,12 @@ import MessageInput from "react-input-emoji";
 import ScrollView from "devextreme-react/scroll-view";
 import { SideNavOuterToolbar } from "../../layouts";
 import appInfo from "../../app-info";
-import { fetchMessages } from "../../services/chat";
-import { useDispatch, useSelector } from "react-redux";
+import { fetchMessages, submitMessage } from "../../services/chat";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import LoadIndicator from "devextreme-react/load-indicator";
+import send_icon from "./../../assets/send.png";
+import { Button } from "devextreme-react/button";
 
 export default function Home() {
   const { conversationId } = useParams();
@@ -19,7 +21,12 @@ export default function Home() {
   const [messages, setMessages] = useState(null);
   const [otherUser, setOtherUser] = useState();
 
-  const handleOnEnter = (text) => {};
+  const handleSubmit = async () => {
+    console.log("text", text);
+    const response = await submitMessage();
+    console.log("response", response);
+    setText("");
+  };
 
   const getMessages = useCallback(async () => {
     try {
@@ -123,12 +130,16 @@ export default function Home() {
                 </div>
                 <div className="message-input-container">
                   <MessageInput
+                    keepOpened
                     value={text}
                     onChange={setText}
-                    cleanOnEnter
-                    onEnter={handleOnEnter}
-                    keepOpened
-                    height={20}
+                    onEnter={handleSubmit}
+                  />
+                  <Button
+                    icon={send_icon}
+                    type="normal"
+                    stylingMode="contained"
+                    onClick={handleSubmit}
                   />
                 </div>
               </>

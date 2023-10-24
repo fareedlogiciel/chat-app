@@ -98,4 +98,20 @@
   bottom: 10px;
   left: 0px;
   right: 0px;
+
+  .dx-button {
+    position: absolute;
+    right: 65px;
+    bottom: 37px;
+    z-index: 9;
+
+    img {
+      width: 32px;
+      height: 32px;
+    }
+  }
+
+  .react-input-emoji--input {
+    padding-right: 65px;
+  }
 }
