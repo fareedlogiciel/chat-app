@@ -112,3 +112,8 @@
   @import "../../utils/patches.scss";
   @include menu-pre-init-patch;
 }
+
+.rce-citem-avatar img {
+  width: 35px !important;
+  height: 35px !important;
+}

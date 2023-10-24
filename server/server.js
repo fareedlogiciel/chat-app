@@ -14,7 +14,6 @@ const io = new Server(server, {
 // Listen for when the client connects via socket.io-client
 io.on("connection", (socket) => {
   const CHAT_BOT = "ChatBot";
-  // console.log(`User connected ${socket.id}`);
 
   // Our socket event listeners
   socket.on("join_room", (data) => {

@@ -1,3 +1,11 @@
+.load-indication-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .logos-container {
   margin: 20px 0 40px 0;
   text-align: center;
@@ -38,13 +46,25 @@
   z-index: 99;
 
   .user-navbar {
-    background-color: #edded1ad !important;
+    display: flex;
+    padding: 5px 10px;
+    height: 55px;
+
+    .rce-avatar-letter {
+      margin: 3px;
+    }
+
+    background-color: #efeae2 !important;
+    border-bottom: 1px solid #cccccc40;
 
     .user-name {
       margin-left: 12px;
-      line-height: 23px;
+      line-height: 30px;
       font-size: 16px;
       font-weight: bold;
+      margin-block: 0px;
+      display: flex;
+      align-items: center;
     }
   }
 }
@@ -54,8 +74,8 @@
   left: 0px;
   right: 0px;
   overflow: auto;
-  height: calc(100vh - 260px);
-  top: 75px;
+  height: calc(100vh - 240px);
+  top: 55px;
 }
 
 .rce-mbox-video--video {
@@ -65,10 +85,6 @@
 .react-input-emoji--input {
   min-height: 100px !important;
   max-height: 100px !important;
-}
-
-.d-none {
-  display: none;
 }
 
 .react-input-emoji--placeholder {

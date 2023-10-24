@@ -2,7 +2,7 @@ import React, { useEffect, useCallback, useMemo } from "react";
 import "./SideNavigationMenu.scss";
 import { ChatList } from "react-chat-elements";
 import ScrollView from "devextreme-react/scroll-view";
-import { fetchConversations } from "../../services/conversation";
+import { fetchConversations } from "../../services/chat";
 import {
   setConversationsOnStore,
   setLoadingConversations,
@@ -29,7 +29,7 @@ export default function SideNavigationMenu(props) {
       const conversationItem = {
         letterItem: {
           letter: requiredUser?.name?.at(0),
-          id: requiredUser?._id,
+          id: conversation?._id,
         },
         title: requiredUser?.name,
         subtitle: "Click to start chat!",
@@ -40,7 +40,7 @@ export default function SideNavigationMenu(props) {
     });
     tempConversations?.splice(0, 0, {
       avatar: announce,
-      title: "Public Channel",
+      title: "General (Public)",
       subtitle: "Click to start chat!",
       date: "",
       unread: 5,
@@ -50,7 +50,7 @@ export default function SideNavigationMenu(props) {
 
   const getConversations = useCallback(async () => {
     try {
-      const { conversations: tempData } = await fetchConversations(user?._id);
+      const tempData = await fetchConversations(user?._id);
       dispatch(setConversationsOnStore(tempData));
       dispatch(setLoadingConversations(false));
     } catch (err) {
@@ -77,7 +77,6 @@ export default function SideNavigationMenu(props) {
                   className="chat-list"
                   dataSource={formattedConversations}
                   onClick={(item) => {
-                    console.log("item", item);
                     navigate(`/chat/${item?.letterItem?.id || "general"}`);
                   }}
                 />

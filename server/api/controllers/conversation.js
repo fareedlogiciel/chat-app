@@ -12,7 +12,7 @@ module.exports.new_conversation = async (req, res) => {
     const savedConversation = await newConversation?.save();
     return res.status(201).json({
       message: "Conversation creared successfully.",
-      conversation: savedConversation,
+      result: savedConversation,
     });
   } catch (err) {
     return res.status(500).json({ message: "Request failed.", err });

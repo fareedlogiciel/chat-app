@@ -13,7 +13,7 @@ module.exports.new_message = async (req, res) => {
     const savedMessage = await newMessage?.save();
     return res.status(201).json({
       message: "Message creared successfully.",
-      conversation: savedMessage,
+      result: savedMessage,
     });
   } catch (err) {
     return res.status(500).json({ message: "Request failed.", err });
@@ -39,8 +39,20 @@ module.exports.get_messages_by_con_id = async (req, res) => {
         {
           conversation_id: req?.params?.conversation_id,
         },
-        { _id: 1, conversation_id: 1, sender: 1, receiver: 1, text: 1 }
-      );
+        {
+          _id: 1,
+          conversation_id: 1,
+          sender: 1,
+          receiver: 1,
+          text: 1,
+          createdAt: 1,
+        }
+      )
+        .sort({ createdAt: 1 })
+        .populate({
+          path: "sender receiver",
+          select: { _id: 1, name: 1, email: 1 },
+        });
       return res.status(200).json(messages);
     } catch (err) {
       return res.status(500).json({ err });
