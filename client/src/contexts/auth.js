@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, {
   useState,
   useEffect,
@@ -6,12 +7,11 @@ import React, {
   useCallback,
 } from "react";
 import { getUser, signIn as sendSignInRequest } from "../api/auth";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 function AuthProvider(props) {
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(false);
-  const state = useSelector((state) => state);
   const dispatch = useDispatch();
 
   // useEffect(() => {

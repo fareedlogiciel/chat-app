@@ -2,7 +2,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef, useCallback, useMemo } from "react";
 import { navigation } from "../../app-navigation";
-import { useNavigation } from "../../contexts/navigation";
 import { useScreenSize } from "../../utils/media-query";
 import "./SideNavigationMenu.scss";
 import * as events from "devextreme/events";
@@ -14,9 +13,11 @@ import {
   setLoadingConversations,
 } from "../../store/reducers/app";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export default function SideNavigationMenu(props) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { user } = useSelector((state) => state?.auth);
   const { conversations, loadingConversations } = useSelector(
     (state) => state?.app
@@ -25,19 +26,16 @@ export default function SideNavigationMenu(props) {
 
   const formattedConversations = useMemo(() => {
     const tempConversations = conversations?.map((conversation, i) => {
-      const avatarText =
+      const requiredUser =
         user?._id === conversation?.sender?._id
-          ? conversation?.receiver?.name?.at(0)
-          : conversation?.sender?.name?.at(0);
+          ? conversation?.receiver
+          : conversation?.sender;
       const conversationItem = {
         letterItem: {
-          id: avatarText,
-          letter: avatarText,
+          letter: requiredUser?.name?.at(0),
+          id: requiredUser?._id,
         },
-        title:
-          user?._id === conversation?.sender?._id
-            ? conversation?.receiver?.name
-            : conversation?.sender?.name,
+        title: requiredUser?.name,
         subtitle: "Click to start chat!",
         date: conversation?.createdAt,
         unread: i,
@@ -58,42 +56,42 @@ export default function SideNavigationMenu(props) {
 
   // const items = useMemo(normalizePath, []);
 
-  const {
-    navigationData: { currentPath },
-  } = useNavigation();
+  // const {
+  //   navigationData: { currentPath },
+  // } = useNavigation();
 
-  const treeViewRef = useRef(null);
-  const wrapperRef = useRef();
-  const getWrapperRef = useCallback(
-    (element) => {
-      const prevElement = wrapperRef.current;
-      if (prevElement) {
-        events.off(prevElement, "dxclick");
-      }
+  // const treeViewRef = useRef(null);
+  // const wrapperRef = useRef();
+  // const getWrapperRef = useCallback(
+  //   (element) => {
+  //     const prevElement = wrapperRef.current;
+  //     if (prevElement) {
+  //       events.off(prevElement, "dxclick");
+  //     }
 
-      wrapperRef.current = element;
-      events.on(element, "dxclick", (e) => {
-        openMenu(e);
-      });
-    },
-    [openMenu]
-  );
+  //     wrapperRef.current = element;
+  //     events.on(element, "dxclick", (e) => {
+  //       openMenu(e);
+  //     });
+  //   },
+  //   [openMenu]
+  // );
 
-  useEffect(() => {
-    const treeView = treeViewRef.current && treeViewRef.current.instance;
-    if (!treeView) {
-      return;
-    }
+  // useEffect(() => {
+  //   const treeView = treeViewRef.current && treeViewRef.current.instance;
+  //   if (!treeView) {
+  //     return;
+  //   }
 
-    if (currentPath !== undefined) {
-      treeView.selectItem(currentPath);
-      treeView.expandItem(currentPath);
-    }
+  //   if (currentPath !== undefined) {
+  //     treeView.selectItem(currentPath);
+  //     treeView.expandItem(currentPath);
+  //   }
 
-    if (compactMode) {
-      treeView.collapseAll();
-    }
-  }, [currentPath, compactMode]);
+  //   if (compactMode) {
+  //     treeView.collapseAll();
+  //   }
+  // }, [currentPath, compactMode]);
 
   const getConversations = useCallback(async () => {
     try {
@@ -111,10 +109,7 @@ export default function SideNavigationMenu(props) {
   }, [getConversations]);
 
   return (
-    <div
-      className={"dx-swatch-additionald side-navigation-menu bg-white"}
-      ref={getWrapperRef}
-    >
+    <div className={"dx-swatch-additionald side-navigation-menu bg-white"}>
       {children}
       <ScrollView>
         <div className={"menu-container"}>
@@ -126,6 +121,7 @@ export default function SideNavigationMenu(props) {
                 <ChatList
                   className="chat-list"
                   dataSource={formattedConversations}
+                  onClick={(item) => navigate(item?.letterItem?.id)}
                 />
               )}
             </>
