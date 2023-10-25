@@ -18,9 +18,9 @@ mongoose.connect(MONGO_ATLAS_URI);
 app.use(morgan("dev"));
 
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: false, limit: "50mb" }));
 // parse application/json
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "50mb" }));
 
 // Handling CORS errors
 app.use((req, res, next) => {

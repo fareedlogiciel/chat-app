@@ -11,6 +11,7 @@ import { useParams } from "react-router-dom";
 import LoadIndicator from "devextreme-react/load-indicator";
 import send_icon from "./../../assets/send.png";
 import { Button } from "devextreme-react/button";
+import notify from "devextreme/ui/notify";
 
 export default function Home() {
   const { conversationId } = useParams();
@@ -22,16 +23,24 @@ export default function Home() {
   const [otherUser, setOtherUser] = useState();
 
   const handleSubmit = async () => {
-    console.log("text", text);
-    const response = await submitMessage();
-    console.log("response", response);
-    setText("");
+    try {
+      const data = {
+        conversation_id: conversationId,
+        sender: user?._id,
+        receiver: otherUser?._id,
+        text,
+      };
+      await submitMessage(data);
+      setText("");
+      getMessages();
+    } catch (err) {
+      notify(err, "error", 2000);
+    }
   };
 
   const getMessages = useCallback(async () => {
     try {
       if (conversationId) {
-        setLoading(true);
         const tempData = await fetchMessages(conversationId);
         setMessages(tempData);
         if (tempData && tempData?.length) {
@@ -54,98 +63,92 @@ export default function Home() {
   }, [conversationId, user?._id]);
 
   useEffect(() => {
+    setLoading(true);
     getMessages();
   }, [conversationId, getMessages]);
 
   useEffect(() => {
-    if (messageListBottomRef?.current) {
-      messageListBottomRef?.current?.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messageListBottomRef, conversationId]);
+    messageListBottomRef?.current?.scrollIntoView({ behavior: "instant" });
+  }, [messages]);
 
   return (
     <SideNavOuterToolbar title={appInfo.title}>
       {conversationId && (
-        <>
-          {loading ? (
-            <div className="load-indication-container">
-              <LoadIndicator height={30} width={30} />
-            </div>
-          ) : (
-            <div>
-              <>
-                <div className="user-navbar-container">
-                  <div className="user-navbar">
-                    {conversationId === "general" ? (
-                      <p className="user-name"># General</p>
-                    ) : (
+        <div>
+          <div>
+            <div className="user-navbar-container">
+              <div className="user-navbar">
+                {conversationId === "general" ? (
+                  <p className="user-name"># General</p>
+                ) : (
+                  <>
+                    {otherUser && (
                       <>
-                        {otherUser && (
-                          <>
-                            <Avatar
-                              alt="avatar"
-                              size="large"
-                              type="circle"
-                              letterItem={{
-                                id: otherUser?._id || "",
-                                letter: otherUser?.name?.at(0) || "",
-                              }}
-                            />
-                            <p className="user-name">{otherUser?.name}</p>
-                          </>
-                        )}
+                        <Avatar
+                          alt="avatar"
+                          size="large"
+                          type="circle"
+                          letterItem={{
+                            id: otherUser?._id || "",
+                            letter: otherUser?.name?.at(0) || "",
+                          }}
+                        />
+                        <p className="user-name">{otherUser?.name}</p>
                       </>
                     )}
-                  </div>
-                </div>
-                <div className="message-list-container">
-                  <ScrollView>
-                    <div>
-                      <MessageList
-                        className="content-block message-list"
-                        lockable={true}
-                        toBottomHeight={"100%"}
-                        dataSource={
-                          messages?.map((message) => {
-                            const tempObj = {
-                              type: "text",
-                              title: message?.sender?.name,
-                              text: message.text,
-                              date: message?.createdAt,
-                              position: "left",
-                            };
-                            if (user?._id === message?.sender?._id) {
-                              tempObj.position = "right";
-                            }
-                            return tempObj;
-                          }) || []
-                        }
-                      />
-                      <div
-                        style={{ width: 1, height: 1 }}
-                        ref={messageListBottomRef}
-                      ></div>
-                    </div>
-                  </ScrollView>
-                </div>
-                <div className="message-input-container">
-                  <MessageInput
-                    keepOpened
-                    value={text}
-                    onChange={setText}
-                    onEnter={handleSubmit}
-                  />
-                  <Button
-                    icon={send_icon}
-                    type="normal"
-                    stylingMode="contained"
-                    onClick={handleSubmit}
-                  />
-                </div>
-              </>
+                  </>
+                )}
+              </div>
             </div>
-          )}
-        </>
+            <div className="message-list-container">
+              <ScrollView>
+                <div>
+                  {loading ? (
+                    <div className="load-indication-container">
+                      <LoadIndicator />
+                    </div>
+                  ) : (
+                    <MessageList
+                      className="content-block message-list"
+                      lockable={true}
+                      toBottomHeight={"100%"}
+                      dataSource={
+                        messages?.map((message) => {
+                          const tempObj = {
+                            type: "text",
+                            title: message?.sender?.name,
+                            text: message.text,
+                            date: message?.createdAt,
+                            position: "left",
+                          };
+                          if (user?._id === message?.sender?._id) {
+                            tempObj.position = "right";
+                          }
+                          return tempObj;
+                        }) || []
+                      }
+                    />
+                  )}
+                  <div ref={messageListBottomRef} />
+                </div>
+              </ScrollView>
+            </div>
+            <div className="message-input-container">
+              <MessageInput
+                keepOpened
+                value={text}
+                onChange={setText}
+                onEnter={handleSubmit}
+              />
+              <Button
+                icon={send_icon}
+                type="normal"
+                stylingMode="contained"
+                onClick={handleSubmit}
+              />
+            </div>
+          </div>
+        </div>
       )}
     </SideNavOuterToolbar>
   );
