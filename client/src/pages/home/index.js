@@ -12,6 +12,10 @@ import LoadIndicator from "devextreme-react/load-indicator";
 import send_icon from "./../../assets/send.png";
 import { Button } from "devextreme-react/button";
 import notify from "devextreme/ui/notify";
+import socketIO from "socket.io-client";
+import { SocketEvents } from "./../../socket-events";
+
+const socket = socketIO.connect("http://localhost:4000");
 
 export default function Home() {
   const { conversationId } = useParams();
@@ -24,15 +28,25 @@ export default function Home() {
 
   const handleSubmit = async () => {
     try {
-      const data = {
-        conversation_id: conversationId,
-        sender: user?._id,
-        receiver: otherUser?._id,
-        text,
-      };
-      await submitMessage(data);
-      setText("");
-      getMessages();
+      if (text && user) {
+        socket.emit(SocketEvents?.MESSAGE, {
+          text: text?.trim(),
+          name: user?.name,
+          conversation_id: conversationId,
+          sender: user?._id,
+          receiver: otherUser?._id,
+          socketId: socket.id,
+        });
+        const data = {
+          conversation_id: conversationId,
+          sender: user?._id,
+          receiver: otherUser?._id,
+          text: text?.trim(),
+        };
+        await submitMessage(data);
+        setText("");
+        getMessages();
+      }
     } catch (err) {
       notify(err, "error", 2000);
     }
@@ -141,6 +155,7 @@ export default function Home() {
                 onEnter={handleSubmit}
               />
               <Button
+                disabled={!text}
                 icon={send_icon}
                 type="normal"
                 stylingMode="contained"

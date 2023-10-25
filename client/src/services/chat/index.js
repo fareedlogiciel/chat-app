@@ -24,8 +24,7 @@ export const fetchMessages = async (conversationId) => {
 export const submitMessage = async (data) => {
   try {
     const endpoint = apiEndpoints.submitMessage;
-    const response = await postRequest(endpoint, data);
-    console.log("response", response);
+    await postRequest(endpoint, data);
     return Promise.resolve();
   } catch (err) {
     return Promise.reject(err?.response?.data?.message);
