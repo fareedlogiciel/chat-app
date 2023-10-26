@@ -19,6 +19,7 @@ import { SocketEvents } from "./../../socket-events";
 const socket = socketIO.connect("http://localhost:4000");
 
 export default function Home() {
+  const attachmentRef = useRef();
   const { otherUserId } = useParams();
   const isGeneral = otherUserId === "general";
   const messageListBottomRef = useRef(null);
@@ -31,6 +32,7 @@ export default function Home() {
 
   const uploadAttachment = useCallback(() => {
     console.log("uploadAttachment clicked!");
+    attachmentRef?.current?.click();
   }, []);
 
   useEffect(() => {
@@ -210,6 +212,11 @@ export default function Home() {
                 icon={send_icon}
                 className="send-btn"
                 onClick={handleSubmit}
+              />
+              <input
+                type="file"
+                style={{ display: "none" }}
+                ref={attachmentRef}
               />
             </div>
           </div>
