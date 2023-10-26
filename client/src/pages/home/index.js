@@ -44,7 +44,7 @@ export default function Home() {
           receiver_name: otherUser?.name,
         };
         socket.emit(SocketEvents?.SEND_MESSAGE, data, (res) => {
-          updateMessages(res);
+          updateMessageList(res);
         });
         setText("");
       }
@@ -83,7 +83,7 @@ export default function Home() {
     }
   }, [otherUserId, user?._id]);
 
-  const updateMessages = useCallback(
+  const updateMessageList = useCallback(
     (data) => {
       const formattedMessage = {
         type: "text",
@@ -119,7 +119,7 @@ export default function Home() {
 
   useEffect(() => {
     socket.on(SocketEvents.RECEIVE_MESSAGE, (data) => {
-      updateMessages(data);
+      updateMessageList(data);
     });
     return () => socket.off(SocketEvents.RECEIVE_MESSAGE);
   }, []);

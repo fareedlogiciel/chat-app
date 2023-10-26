@@ -29,7 +29,6 @@ export default function SideNavigationMenu(props) {
         title: item?.name,
         subtitle: "Click to start chat, or view chat history!",
         date: item?.createdAt,
-        unread: i,
         id: item?._id,
       };
       if (conversationItem?.id !== user?._id) {
@@ -41,7 +40,6 @@ export default function SideNavigationMenu(props) {
       title: "General (Public)",
       subtitle: "Click to start chat, or view chat history!",
       date: "",
-      unread: 5,
       id: "general",
     });
     return tempConversations;
