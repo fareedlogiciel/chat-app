@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import "./home.scss";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Avatar, MessageList } from "react-chat-elements";
@@ -11,6 +10,7 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import LoadIndicator from "devextreme-react/load-indicator";
 import send_icon from "./../../assets/send.png";
+import attachment_icon from "./../../assets/attachment.svg";
 import { Button } from "devextreme-react/button";
 import notify from "devextreme/ui/notify";
 import socketIO from "socket.io-client";
@@ -27,6 +27,10 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [messages, setMessages] = useState([]);
   const [otherUser, setOtherUser] = useState();
+
+  const uploadAttachment = useCallback(() => {
+    console.log("uploadAttachment clicked!");
+  }, []);
 
   useEffect(() => {
     // Adding user to socket server
@@ -122,6 +126,7 @@ export default function Home() {
       updateMessageList(data);
     });
     return () => socket.off(SocketEvents.RECEIVE_MESSAGE);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -180,10 +185,14 @@ export default function Home() {
                 onEnter={handleSubmit}
               />
               <Button
+                icon={attachment_icon}
+                onClick={uploadAttachment}
+                className="attach-btn"
+              />
+              <Button
                 disabled={!text}
                 icon={send_icon}
-                type="normal"
-                stylingMode="contained"
+                className="send-btn"
                 onClick={handleSubmit}
               />
             </div>
