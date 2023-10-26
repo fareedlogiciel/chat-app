@@ -11,9 +11,8 @@ export default function AppRoutes() {
       <Route path="create-account" element={<CreateAccountForm />} />
       {user && (
         <>
-          <Route path={"chat/:conversationId"} element={<HomePage />} />
+          <Route path={"chat/:otherUserId"} element={<HomePage />} />
           <Route path={"chat"} element={<HomePage />} />
-          {/* <Route path={"profile"} element={<ProfilePage />} /> */}
           <Route path="*" element={<Navigate to={"chat"} />} />
         </>
       )}

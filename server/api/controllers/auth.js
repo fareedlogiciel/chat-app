@@ -60,8 +60,7 @@ module.exports.login = (req, res) => {
     .then((user) => {
       if (user?.length < 1) {
         return res.status(401).json({
-          message:
-            "Invalid credentials! Please try again with different credentials",
+          message: "User does not exist!",
         });
       } else {
         bcrypt.compare(password, user[0].password, (err, result) => {
@@ -98,4 +97,16 @@ module.exports.login = (req, res) => {
         message: "Login failed! Please try again!",
       });
     });
+};
+
+module.exports.get_users = async (req, res) => {
+  try {
+    const users = await User.find(
+      {},
+      { _id: 1, name: 1, email: 1, createdAt: 1 }
+    );
+    return res.status(200).json(users);
+  } catch (err) {
+    return res.status(500).json({ err });
+  }
 };

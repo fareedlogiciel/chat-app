@@ -1,19 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  loadingConversations: true,
-  conversations: [],
+  loadingUsers: true,
+  users: [],
 };
 
 const appSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
-    setConversationsOnStore: (state, action) => {
-      state.conversations = structuredClone(action?.payload);
+    setUsersOnStore: (state, action) => {
+      state.users = structuredClone(action?.payload);
     },
     setLoadingConversations: (state, action) => {
-      state.loadingConversations = action?.payload;
+      state.loadingUsers = action?.payload;
     },
     resetApp: () => {
       return { ...initialState };
@@ -21,6 +21,6 @@ const appSlice = createSlice({
   },
 });
 
-export const { setConversationsOnStore, setLoadingConversations, resetApp } =
+export const { setUsersOnStore, setLoadingConversations, resetApp } =
   appSlice?.actions;
 export default appSlice?.reducer;

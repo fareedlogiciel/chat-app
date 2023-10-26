@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import "./home.scss";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Avatar, MessageList } from "react-chat-elements";
@@ -5,7 +6,7 @@ import MessageInput from "react-input-emoji";
 import ScrollView from "devextreme-react/scroll-view";
 import { SideNavOuterToolbar } from "../../layouts";
 import appInfo from "../../app-info";
-import { fetchMessages, submitMessage } from "../../services/chat";
+import { fetchMessages } from "../../services/chat";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import LoadIndicator from "devextreme-react/load-indicator";
@@ -18,34 +19,34 @@ import { SocketEvents } from "./../../socket-events";
 const socket = socketIO.connect("http://localhost:4000");
 
 export default function Home() {
-  const { conversationId } = useParams();
+  const { otherUserId } = useParams();
   const messageListBottomRef = useRef(null);
+  const { users } = useSelector((state) => state?.app);
   const { user } = useSelector((state) => state?.auth);
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(true);
-  const [messages, setMessages] = useState(null);
+  const [messages, setMessages] = useState([]);
   const [otherUser, setOtherUser] = useState();
+
+  useEffect(() => {
+    // Adding user to socket server
+    socket.emit(SocketEvents.ADD_SOCKET_USER, { user_id: user?._id });
+  }, [user?._id]);
 
   const handleSubmit = async () => {
     try {
       if (text && user) {
-        socket.emit(SocketEvents?.MESSAGE, {
-          text: text?.trim(),
-          name: user?.name,
-          conversation_id: conversationId,
-          sender: user?._id,
-          receiver: otherUser?._id,
-          socketId: socket.id,
-        });
         const data = {
-          conversation_id: conversationId,
-          sender: user?._id,
-          receiver: otherUser?._id,
           text: text?.trim(),
+          sender_id: user?._id,
+          sender_name: user?.name,
+          receiver_id: otherUser?._id,
+          receiver_name: otherUser?.name,
         };
-        await submitMessage(data);
+        socket.emit(SocketEvents?.SEND_MESSAGE, data, (res) => {
+          updateMessages(res);
+        });
         setText("");
-        getMessages();
       }
     } catch (err) {
       notify(err, "error", 2000);
@@ -54,18 +55,24 @@ export default function Home() {
 
   const getMessages = useCallback(async () => {
     try {
-      if (conversationId) {
-        const tempData = await fetchMessages(conversationId);
-        setMessages(tempData);
-        if (tempData && tempData?.length) {
-          const requiredUser =
-            user?._id === tempData[0]?.sender?._id
-              ? tempData[0]?.receiver
-              : tempData[0]?.sender;
-
-          setOtherUser(structuredClone(requiredUser));
-        } else {
-          setOtherUser(null);
+      if (otherUserId) {
+        setMessages([]);
+        const tempMessages = await fetchMessages(otherUserId, user?._id);
+        if (tempMessages && tempMessages?.length) {
+          const formattedMessages = tempMessages?.map((item) => {
+            const formattedMessage = {
+              type: "text",
+              title: item?.sender_name,
+              text: item?.text,
+              date: item?.createdAt,
+              position: "left",
+            };
+            if (otherUserId === item?.receiver_id) {
+              formattedMessage.position = "right";
+            }
+            return formattedMessage;
+          });
+          setMessages(structuredClone(formattedMessages));
         }
         setLoading(false);
       }
@@ -74,25 +81,57 @@ export default function Home() {
       setMessages([]);
       setLoading(false);
     }
-  }, [conversationId, user?._id]);
+  }, [otherUserId, user?._id]);
+
+  const updateMessages = useCallback(
+    (data) => {
+      const formattedMessage = {
+        type: "text",
+        title: data?.sender_name,
+        text: data?.text,
+        date: data?.createdAt,
+        position: "left",
+      };
+      if (otherUserId === data?.receiver_id) {
+        formattedMessage.position = "right";
+      }
+      setMessages((prev) => {
+        return [...prev, { ...formattedMessage }];
+      });
+    },
+    [otherUserId]
+  );
 
   useEffect(() => {
     setLoading(true);
     getMessages();
-  }, [conversationId, getMessages]);
+  }, [otherUserId, getMessages]);
+
+  useEffect(() => {
+    if (users && users?.length) {
+      setOtherUser(users.find((user) => user?._id === otherUserId));
+    }
+  }, [otherUserId, users]);
 
   useEffect(() => {
     messageListBottomRef?.current?.scrollIntoView({ behavior: "instant" });
   }, [messages]);
 
+  useEffect(() => {
+    socket.on(SocketEvents.RECEIVE_MESSAGE, (data) => {
+      updateMessages(data);
+    });
+    return () => socket.off(SocketEvents.RECEIVE_MESSAGE);
+  }, []);
+
   return (
     <SideNavOuterToolbar title={appInfo.title}>
-      {conversationId && (
+      {otherUserId && (
         <div>
           <div>
             <div className="user-navbar-container">
               <div className="user-navbar">
-                {conversationId === "general" ? (
+                {otherUserId === "general" ? (
                   <p className="user-name"># General</p>
                 ) : (
                   <>
@@ -126,21 +165,7 @@ export default function Home() {
                       className="content-block message-list"
                       lockable={true}
                       toBottomHeight={"100%"}
-                      dataSource={
-                        messages?.map((message) => {
-                          const tempObj = {
-                            type: "text",
-                            title: message?.sender?.name,
-                            text: message.text,
-                            date: message?.createdAt,
-                            position: "left",
-                          };
-                          if (user?._id === message?.sender?._id) {
-                            tempObj.position = "right";
-                          }
-                          return tempObj;
-                        }) || []
-                      }
+                      dataSource={messages}
                     />
                   )}
                   <div ref={messageListBottomRef} />

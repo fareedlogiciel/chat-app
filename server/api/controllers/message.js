@@ -5,9 +5,10 @@ module.exports.new_message = async (req, res) => {
   try {
     const newMessage = new Message({
       _id: new mongoose.Types.ObjectId(),
-      conversation_id: req?.body?.conversation_id,
-      sender: req?.body?.sender,
-      receiver: req?.body?.receiver,
+      sender_id: req?.body?.sender_id,
+      sender_name: req?.body?.sender_name,
+      receiver_id: req?.body?.receiver_id,
+      receiver_name: req?.body?.receiver_name,
       text: req?.body?.text,
     });
     const savedMessage = await newMessage?.save();
@@ -20,46 +21,38 @@ module.exports.new_message = async (req, res) => {
   }
 };
 
-module.exports.get_all_messages = async (req, res) => {
-  try {
-    const messages = await Message.find(
-      {},
-      { _id: 1, conversation_id: 1, sender: 1, receiver: 1, text: 1 }
-    );
-    return res.status(200).json(messages);
-  } catch (err) {
-    return res.status(500).json({ err });
-  }
-};
-
-module.exports.get_messages_by_con_id = async (req, res) => {
-  if (req?.params?.conversation_id) {
+module.exports.get_messages_by_user_id = async (req, res) => {
+  if (req?.params?.user_id && req?.query?.selfId) {
     try {
-      const messages = await Message.find(
-        {
-          conversation_id: req?.params?.conversation_id,
-        },
-        {
-          _id: 1,
-          conversation_id: 1,
-          sender: 1,
-          receiver: 1,
-          text: 1,
-          createdAt: 1,
-        }
-      )
-        .sort({ createdAt: 1 })
-        .populate({
-          path: "sender receiver",
-          select: { _id: 1, name: 1, email: 1 },
-        });
+      const messages = await Message.find({
+        $or: [
+          {
+            $and: [
+              {
+                sender_id: req?.params?.user_id,
+              },
+              {
+                receiver_id: req?.query?.selfId,
+              },
+            ],
+          },
+          {
+            $and: [
+              {
+                sender_id: req?.query?.selfId,
+              },
+              {
+                receiver_id: req?.params?.user_id,
+              },
+            ],
+          },
+        ],
+      }).sort({ createdAt: 1 });
       return res.status(200).json(messages);
     } catch (err) {
       return res.status(500).json({ err });
     }
   } else {
-    return res
-      .status(400)
-      .json({ message: "Please add conversation_id in params!" });
+    return res.status(400).json({ message: "Please add user_id in params!" });
   }
 };

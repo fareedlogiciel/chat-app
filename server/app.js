@@ -8,7 +8,6 @@ const { MONGO_ATLAS_URI } = require("./env-constants");
 
 // All routes
 const authRoutes = require("./api/routes/auth");
-const conversationRoutes = require("./api/routes/conversation");
 const messageRoutes = require("./api/routes/message");
 
 // Connecting MongoDB
@@ -38,7 +37,6 @@ app.use((req, res, next) => {
 
 // Routes which should handle requests
 app.use("/api/auth", authRoutes);
-app.use("/api/conversations", conversationRoutes);
 app.use("/api/messages", messageRoutes);
 
 // Handling errors

@@ -2,9 +2,9 @@ import React, { useEffect, useCallback, useMemo } from "react";
 import "./SideNavigationMenu.scss";
 import { ChatList } from "react-chat-elements";
 import ScrollView from "devextreme-react/scroll-view";
-import { fetchConversations } from "../../services/chat";
+import { fetchAllUsers } from "../../services/chat";
 import {
-  setConversationsOnStore,
+  setUsersOnStore,
   setLoadingConversations,
 } from "../../store/reducers/app";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,70 +14,69 @@ import announce from "./../../assets/announce.png";
 export default function SideNavigationMenu(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state?.auth);
   const { children } = props;
-  const { conversations, loadingConversations } = useSelector(
-    (state) => state?.app
-  );
+  const { users, loadingUsers } = useSelector((state) => state?.app);
+  const { user } = useSelector((state) => state?.auth);
 
-  const formattedConversations = useMemo(() => {
-    const tempConversations = conversations?.map((conversation, i) => {
-      const requiredUser =
-        user?._id === conversation?.sender?._id
-          ? conversation?.receiver
-          : conversation?.sender;
+  const formattedConversation = useMemo(() => {
+    const tempConversations = [];
+    users?.forEach((item, i) => {
       const conversationItem = {
         letterItem: {
-          letter: requiredUser?.name?.at(0),
-          id: conversation?._id,
+          letter: item?.name?.at(0),
+          id: item?._id,
         },
-        title: requiredUser?.name,
-        subtitle: "Click to start chat!",
-        date: conversation?.createdAt,
+        title: item?.name,
+        subtitle: "Click to start chat, or view chat history!",
+        date: item?.createdAt,
         unread: i,
+        id: item?._id,
       };
-      return conversationItem;
+      if (conversationItem?.id !== user?._id) {
+        tempConversations?.push(conversationItem);
+      }
     });
     tempConversations?.splice(0, 0, {
       avatar: announce,
       title: "General (Public)",
-      subtitle: "Click to start chat!",
+      subtitle: "Click to start chat, or view chat history!",
       date: "",
       unread: 5,
+      id: "general",
     });
     return tempConversations;
-  }, [conversations, user]);
+  }, [user?._id, users]);
 
-  const getConversations = useCallback(async () => {
+  const getAllUsers = useCallback(async () => {
     try {
-      const tempData = await fetchConversations(user?._id);
-      dispatch(setConversationsOnStore(tempData));
+      const tempData = await fetchAllUsers();
+      dispatch(setUsersOnStore(tempData));
       dispatch(setLoadingConversations(false));
     } catch (err) {
-      console.error("Error (While fetching conversations): ", err);
+      console.error("Error (While fetching users): ", err);
       dispatch(setLoadingConversations(false));
     }
-  }, [dispatch, user?._id]);
+  }, [dispatch]);
 
   useEffect(() => {
-    getConversations();
-  }, [getConversations]);
+    getAllUsers();
+  }, [getAllUsers]);
 
   return (
     <div className={"dx-swatch-additionald side-navigation-menu bg-white"}>
       {children}
       <ScrollView>
         <div className={"menu-container"}>
-          {!loadingConversations && (
+          {!loadingUsers && (
             <>
-              {formattedConversations?.length === 0 ? (
-                <p className="not-found">Conversation history not found!</p>
+              {formattedConversation?.length === 0 ? (
+                <p className="not-found">No one joined yet!</p>
               ) : (
                 <ChatList
                   className="chat-list"
-                  dataSource={formattedConversations}
+                  dataSource={formattedConversation}
                   onClick={(item) => {
-                    navigate(`/chat/${item?.letterItem?.id || "general"}`);
+                    navigate(`/chat/${item?.id}`);
                   }}
                 />
               )}

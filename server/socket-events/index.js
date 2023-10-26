@@ -1,5 +1,7 @@
 module.exports.SocketEvents = {
   CONNECTION: "connection",
   DISCONNECT: "disconnect",
-  MESSAGE: "message",
+  SEND_MESSAGE: "send_message",
+  RECEIVE_MESSAGE: "receive_message",
+  ADD_SOCKET_USER: "add_socket_user",
 };
