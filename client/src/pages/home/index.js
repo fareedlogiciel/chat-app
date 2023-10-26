@@ -20,6 +20,7 @@ const socket = socketIO.connect("http://localhost:4000");
 
 export default function Home() {
   const { otherUserId } = useParams();
+  const isGeneral = otherUserId === "general";
   const messageListBottomRef = useRef(null);
   const { users } = useSelector((state) => state?.app);
   const { user } = useSelector((state) => state?.auth);
@@ -136,7 +137,7 @@ export default function Home() {
           <div>
             <div className="user-navbar-container">
               <div className="user-navbar">
-                {otherUserId === "general" ? (
+                {isGeneral ? (
                   <p className="user-name"># General</p>
                 ) : (
                   <>
@@ -166,12 +167,27 @@ export default function Home() {
                       <LoadIndicator />
                     </div>
                   ) : (
-                    <MessageList
-                      className="content-block message-list"
-                      lockable={true}
-                      toBottomHeight={"100%"}
-                      dataSource={messages}
-                    />
+                    <>
+                      {messages?.length ? (
+                        <MessageList
+                          className="content-block message-list"
+                          lockable={true}
+                          toBottomHeight={"100%"}
+                          dataSource={messages}
+                        />
+                      ) : (
+                        <p className="text-center">
+                          {isGeneral ? (
+                            `Send message to everyone here. All users can see you!`
+                          ) : (
+                            <>
+                              Start chat with <b>{otherUser?.name}</b>, send
+                              your first message now!
+                            </>
+                          )}
+                        </p>
+                      )}
+                    </>
                   )}
                   <div ref={messageListBottomRef} />
                 </div>
