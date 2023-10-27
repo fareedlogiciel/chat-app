@@ -7,7 +7,8 @@ const messageSchema = new mongoose.Schema(
     sender_name: { type: String, required: true },
     receiver_id: { type: String, required: true },
     receiver_name: { type: String, required: true },
-    text: { type: String, required: true },
+    text: { type: String },
+    // attachment: { type: mongoose.Schema.Types.Mixed },
   },
   { timestamps: true }
 );

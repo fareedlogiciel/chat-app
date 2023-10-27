@@ -38,9 +38,13 @@ export default function Home() {
     openLinkInNewTab(URL.createObjectURL(attachment));
   };
 
+  const scrollToBottom = useCallback(() => {
+    messageListBottomRef?.current?.scrollIntoView({ behavior: "instant" });
+  }, [messageListBottomRef]);
+
   const uploadAttachment = useCallback(() => {
     attachmentRef?.current?.click();
-  }, []);
+  }, [attachmentRef]);
 
   useEffect(() => {
     // Adding user to socket server
@@ -49,13 +53,15 @@ export default function Home() {
 
   const handleSubmit = async () => {
     try {
-      if (user && (text || attachment)) {
+      // if (user && (text || attachment)) {
+      if (user && text) {
         const data = {
           text: text?.trim(),
           sender_id: user?._id,
           sender_name: user?.name,
           receiver_id: otherUser?._id,
           receiver_name: otherUser?.name,
+          // attachment: attachment || "",
         };
         socket.emit(SocketEvents?.SEND_MESSAGE, data, (res) => {
           updateMessageList(res);
@@ -116,12 +122,10 @@ export default function Home() {
     },
     [otherUserId]
   );
-  useEffect(() => {
-    setAttachment(null);
-    setText("");
-  }, [otherUserId]);
 
   useEffect(() => {
+    setText("");
+    setAttachment(null);
     setLoading(true);
     getMessages();
   }, [otherUserId, getMessages]);
@@ -133,16 +137,15 @@ export default function Home() {
   }, [otherUserId, users]);
 
   useEffect(() => {
-    messageListBottomRef?.current?.scrollIntoView({ behavior: "instant" });
-  }, [messages]);
+    scrollToBottom();
+  }, [messages, scrollToBottom]);
 
   useEffect(() => {
     socket.on(SocketEvents.RECEIVE_MESSAGE, (data) => {
       updateMessageList(data);
     });
     return () => socket.off(SocketEvents.RECEIVE_MESSAGE);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [updateMessageList]);
 
   return (
     <SideNavOuterToolbar title={appInfo.title}>

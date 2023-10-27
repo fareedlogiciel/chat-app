@@ -39,6 +39,7 @@ socketIO.on(SocketEvents.CONNECTION, (socket) => {
         receiver_id: data?.receiver_id,
         receiver_name: data?.receiver_name,
         text: data?.text,
+        // attachment: data?.attachment,
       });
       const savedMessage = await newMessage?.save();
       const receiver = users.find((user) => user?.userId === data?.receiver_id);
