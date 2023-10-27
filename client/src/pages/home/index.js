@@ -11,10 +11,13 @@ import { useParams } from "react-router-dom";
 import LoadIndicator from "devextreme-react/load-indicator";
 import send_icon from "./../../assets/send.png";
 import attachment_icon from "./../../assets/attachment.svg";
+import file_icon from "./../../assets/file.svg";
+import close_icon from "./../../assets/close.svg";
 import { Button } from "devextreme-react/button";
 import notify from "devextreme/ui/notify";
 import socketIO from "socket.io-client";
 import { SocketEvents } from "./../../socket-events";
+import { openLinkInNewTab } from "../../utils";
 
 const socket = socketIO.connect("http://localhost:4000");
 
@@ -29,9 +32,13 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [messages, setMessages] = useState([]);
   const [otherUser, setOtherUser] = useState();
+  const [attachment, setAttachment] = useState(null);
+
+  const openAttachment = () => {
+    openLinkInNewTab(URL.createObjectURL(attachment));
+  };
 
   const uploadAttachment = useCallback(() => {
-    console.log("uploadAttachment clicked!");
     attachmentRef?.current?.click();
   }, []);
 
@@ -42,7 +49,7 @@ export default function Home() {
 
   const handleSubmit = async () => {
     try {
-      if (text && user) {
+      if (user && (text || attachment)) {
         const data = {
           text: text?.trim(),
           sender_id: user?._id,
@@ -54,6 +61,7 @@ export default function Home() {
           updateMessageList(res);
         });
         setText("");
+        setAttachment(null);
       }
     } catch (err) {
       notify(err, "error", 2000);
@@ -108,6 +116,10 @@ export default function Home() {
     },
     [otherUserId]
   );
+  useEffect(() => {
+    setAttachment(null);
+    setText("");
+  }, [otherUserId]);
 
   useEffect(() => {
     setLoading(true);
@@ -161,7 +173,9 @@ export default function Home() {
                 )}
               </div>
             </div>
-            <div className="message-list-container">
+            <div
+              className={`message-list-container ${attachment ? "h1" : "h2"}`}
+            >
               <ScrollView>
                 <div>
                   {loading ? (
@@ -196,6 +210,31 @@ export default function Home() {
               </ScrollView>
             </div>
             <div className="message-input-container">
+              {attachment && (
+                <div className={"attachment-info"}>
+                  <Button
+                    icon={file_icon}
+                    className="attachment-btn"
+                    onClick={openAttachment}
+                  />
+                  <p className="attachment-name" onClick={openAttachment}>
+                    {attachment?.name || "abc.png"}
+                  </p>
+                  <Button
+                    icon={close_icon}
+                    type="normal"
+                    className="attachment-btn"
+                    onClick={() => setAttachment("")}
+                    stylingMode="text"
+                  />
+                  {/* <img src={close_icon} alt="" className="close-btn" /> */}
+                </div>
+              )}
+              <Button
+                icon={attachment_icon}
+                onClick={uploadAttachment}
+                className="attach-btn"
+              />
               <MessageInput
                 keepOpened
                 value={text}
@@ -203,12 +242,7 @@ export default function Home() {
                 onEnter={handleSubmit}
               />
               <Button
-                icon={attachment_icon}
-                onClick={uploadAttachment}
-                className="attach-btn"
-              />
-              <Button
-                disabled={!text}
+                disabled={!(text || attachment)}
                 icon={send_icon}
                 className="send-btn"
                 onClick={handleSubmit}
@@ -217,6 +251,7 @@ export default function Home() {
                 type="file"
                 style={{ display: "none" }}
                 ref={attachmentRef}
+                onChange={(e) => setAttachment(e?.target?.files[0])}
               />
             </div>
           </div>

@@ -7,40 +7,6 @@
   margin: 100px auto;
 }
 
-.logos-container {
-  margin: 20px 0 40px 0;
-  text-align: center;
-  svg {
-    display: inline-block;
-  }
-}
-
-.devextreme-logo {
-  width: 200px;
-  height: 34px;
-  margin-bottom: 19px;
-}
-
-.react-logo {
-  width: 184px;
-  height: 68px;
-}
-
-.plus {
-  margin: 23px 10px;
-  width: 22px;
-  height: 22px;
-}
-
-.screen-x-small .logos-container {
-  svg {
-    width: 100%;
-    display: block;
-    &.plus {
-      margin: 0;
-    }
-  }
-}
 .user-navbar-container {
   position: fixed;
   width: 100%;
@@ -75,8 +41,15 @@
   left: 0px;
   right: 0px;
   overflow: auto;
-  height: calc(100vh - 240px);
   top: 55px;
+}
+
+.h1 {
+  height: calc(100vh - 270px);
+}
+
+.h2 {
+  height: calc(100vh - 232px);
 }
 
 .rce-mbox-video--video {
@@ -96,9 +69,18 @@
 
 .message-input-container {
   position: absolute;
-  bottom: 10px;
+  bottom: 0px;
   left: 0px;
   right: 0px;
+  padding-bottom: 5px;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  padding-top: 5px;
+  background: #cccccc4f;
+
+  input {
+    border: 1px solid;
+  }
 
   .attach-btn {
     position: absolute;
@@ -124,7 +106,38 @@
     }
   }
 
+  .attachment-info {
+    display: flex;
+    align-items: center;
+
+    .attachment-name {
+      margin: 0px;
+      margin-left: 8px;
+      color: #027eb5;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+    .attachment-btn {
+      z-index: 9;
+      margin-left: 10px;
+
+      img {
+        width: 23px;
+        height: 23px;
+      }
+    }
+  }
+
   .react-input-emoji--input {
     padding-right: 65px;
+    border: 1px solid #ccc;
+    border-radius: 21px;
   }
+}
+
+.rce-container-mlist.content-block.message-list {
+  padding-bottom: 15px;
 }
