@@ -18,7 +18,7 @@ let users = [];
 // Listen for when the client connects via socket.io-client
 socketIO.on(SocketEvents.CONNECTION, (socket) => {
   // User connected!
-  socket?.join("general");
+
   socket.on(SocketEvents.ADD_SOCKET_USER, (data) => {
     // Saving user's id along with socket id
     const userExists = users.some((user) => user?.userId === data?.user_id);
@@ -28,29 +28,40 @@ socketIO.on(SocketEvents.CONNECTION, (socket) => {
         socketId: socket?.id,
       });
     }
+
+    // Adding user to general room for group chat
+    socket?.join("general");
   });
 
-  socket.on(SocketEvents.SEND_MESSAGE, async (data, res) => {
+  // Send message listener
+  socket.on(SocketEvents.SEND_MESSAGE, async (data, callback) => {
+    console.log("data", data);
     try {
       const newMessage = new Message({
         _id: new mongoose.Types.ObjectId(),
         sender_id: data?.sender_id,
         sender_name: data?.sender_name,
         receiver_id: data?.receiver_id,
-        receiver_name: data?.receiver_name,
+        receiver_name: data?.receiver_name || null,
         text: data?.text,
+        chat_type: data?.chat_type,
         // attachment: data?.attachment,
       });
       const savedMessage = await newMessage?.save();
-      const receiver = users.find((user) => user?.userId === data?.receiver_id);
-      if (receiver) {
-        socketIO
-          .to(receiver?.socketId)
-          .emit(SocketEvents.RECEIVE_MESSAGE, savedMessage);
+      if (data?.receiver_id === "general") {
+      } else {
+        const receiver = users.find(
+          (user) => user?.userId === data?.receiver_id
+        );
+        if (receiver) {
+          socketIO
+            .to(receiver?.socketId)
+            .emit(SocketEvents.RECEIVE_MESSAGE, savedMessage);
+        }
+        return callback(savedMessage);
       }
-      res(savedMessage);
     } catch (err) {
-      console.log("Failed to emit!", err);
+      console?.error("Failed to emit!", err);
     }
   });
 

@@ -47,9 +47,11 @@ export default function Home() {
   }, [attachmentRef]);
 
   useEffect(() => {
-    // Adding user to socket server
-    socket.emit(SocketEvents.ADD_SOCKET_USER, { user_id: user?._id });
-  }, [user?._id]);
+    if (user) {
+      // Adding user to socket server
+      socket.emit(SocketEvents.ADD_SOCKET_USER, { user_id: user?._id });
+    }
+  }, [user]);
 
   const handleSubmit = async () => {
     try {
@@ -59,10 +61,12 @@ export default function Home() {
           text: text?.trim(),
           sender_id: user?._id,
           sender_name: user?.name,
-          receiver_id: otherUser?._id,
-          receiver_name: otherUser?.name,
+          receiver_id: isGeneral ? "general" : otherUser?._id,
+          receiver_name: otherUser?.name || null,
+          chat_type: isGeneral ? "public" : "private",
           // attachment: attachment || "",
         };
+        console.log("data", data);
         socket.emit(SocketEvents?.SEND_MESSAGE, data, (res) => {
           updateMessageList(res);
         });
@@ -79,6 +83,7 @@ export default function Home() {
       if (otherUserId) {
         setMessages([]);
         const tempMessages = await fetchMessages(otherUserId, user?._id);
+        console.log("tempMessages", tempMessages);
         if (tempMessages && tempMessages?.length) {
           const formattedMessages = tempMessages?.map((item) => {
             const formattedMessage = {
@@ -86,13 +91,11 @@ export default function Home() {
               title: item?.sender_name,
               text: item?.text,
               date: item?.createdAt,
-              position: "left",
+              position: otherUserId === item?.receiver_id ? "right" : "left",
             };
-            if (otherUserId === item?.receiver_id) {
-              formattedMessage.position = "right";
-            }
             return formattedMessage;
           });
+          console.log("formattedMessages", formattedMessages);
           setMessages(structuredClone(formattedMessages));
         }
         setLoading(false);
@@ -111,11 +114,8 @@ export default function Home() {
         title: data?.sender_name,
         text: data?.text,
         date: data?.createdAt,
-        position: "left",
+        position: otherUserId === data?.receiver_id ? "right" : "left",
       };
-      if (otherUserId === data?.receiver_id) {
-        formattedMessage.position = "right";
-      }
       setMessages((prev) => {
         return [...prev, { ...formattedMessage }];
       });
