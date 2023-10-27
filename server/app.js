@@ -9,9 +9,13 @@ const { MONGO_ATLAS_URI } = require("./env-constants");
 // All routes
 const authRoutes = require("./api/routes/auth");
 const messageRoutes = require("./api/routes/message");
+const uploadRoutes = require("./api/routes/upload");
 
 // Connecting MongoDB
 mongoose.connect(MONGO_ATLAS_URI);
+
+//For accessing static files
+app.use("/uploads", express.static("uploads"));
 
 // For logging requests
 app.use(morgan("dev"));
@@ -38,6 +42,7 @@ app.use((req, res, next) => {
 // Routes which should handle requests
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
+app.use("/api/upload", uploadRoutes);
 
 // Handling errors
 app.use((req, res, next) => {

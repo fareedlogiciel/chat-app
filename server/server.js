@@ -18,7 +18,7 @@ let users = [];
 // Listen for when the client connects via socket.io-client
 socketIO.on(SocketEvents.CONNECTION, (socket) => {
   // User connected!
-
+  socket?.join("general");
   socket.on(SocketEvents.ADD_SOCKET_USER, (data) => {
     // Saving user's id along with socket id
     const userExists = users.some((user) => user?.userId === data?.user_id);
