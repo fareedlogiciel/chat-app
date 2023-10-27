@@ -35,7 +35,6 @@ socketIO.on(SocketEvents.CONNECTION, (socket) => {
 
   // Send message listener
   socket.on(SocketEvents.SEND_MESSAGE, async (data, callback) => {
-    console.log("data", data);
     try {
       const newMessage = new Message({
         _id: new mongoose.Types.ObjectId(),
@@ -49,6 +48,8 @@ socketIO.on(SocketEvents.CONNECTION, (socket) => {
       });
       const savedMessage = await newMessage?.save();
       if (data?.receiver_id === "general") {
+        console.log("savedMessage general", savedMessage);
+        socket?.to("general")?.emit(SocketEvents.RECEIVE_MESSAGE, savedMessage);
       } else {
         const receiver = users.find(
           (user) => user?.userId === data?.receiver_id

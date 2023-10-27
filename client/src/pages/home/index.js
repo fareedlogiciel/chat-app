@@ -66,7 +66,6 @@ export default function Home() {
           chat_type: isGeneral ? "public" : "private",
           // attachment: attachment || "",
         };
-        console.log("data", data);
         socket.emit(SocketEvents?.SEND_MESSAGE, data, (res) => {
           updateMessageList(res);
         });
@@ -83,7 +82,6 @@ export default function Home() {
       if (otherUserId) {
         setMessages([]);
         const tempMessages = await fetchMessages(otherUserId, user?._id);
-        console.log("tempMessages", tempMessages);
         if (tempMessages && tempMessages?.length) {
           const formattedMessages = tempMessages?.map((item) => {
             const formattedMessage = {
@@ -91,11 +89,10 @@ export default function Home() {
               title: item?.sender_name,
               text: item?.text,
               date: item?.createdAt,
-              position: otherUserId === item?.receiver_id ? "right" : "left",
+              position: item?.sender_id === user?._id ? "right" : "left",
             };
             return formattedMessage;
           });
-          console.log("formattedMessages", formattedMessages);
           setMessages(structuredClone(formattedMessages));
         }
         setLoading(false);
@@ -114,13 +111,13 @@ export default function Home() {
         title: data?.sender_name,
         text: data?.text,
         date: data?.createdAt,
-        position: otherUserId === data?.receiver_id ? "right" : "left",
+        position: data?.sender_id === user?._id ? "right" : "left",
       };
       setMessages((prev) => {
         return [...prev, { ...formattedMessage }];
       });
     },
-    [otherUserId]
+    [user]
   );
 
   useEffect(() => {
@@ -142,6 +139,7 @@ export default function Home() {
 
   useEffect(() => {
     socket.on(SocketEvents.RECEIVE_MESSAGE, (data) => {
+      console.log("data RECEIVE_MESSAGE", data);
       updateMessageList(data);
     });
     return () => socket.off(SocketEvents.RECEIVE_MESSAGE);
