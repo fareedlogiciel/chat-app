@@ -82,11 +82,11 @@ export default function SideNavOuterToolbar({ title, children }) {
               return item.type !== Footer && item;
             })}
           </div>
-          <div className={"content-block"}>
+          {/* <div className={"content-block"}>
             {React.Children.map(children, (item) => {
               return item.type === Footer && item;
             })}
-          </div>
+          </div> */}
         </div>
         <Template name={"menu"}>
           <SideNavigationMenu
@@ -94,7 +94,7 @@ export default function SideNavOuterToolbar({ title, children }) {
             selectedItemChanged={onNavigationChanged}
             openMenu={temporaryOpenMenu}
             onMenuReady={onMenuReady}
-          ></SideNavigationMenu>
+          />
         </Template>
       </Drawer>
     </div>
