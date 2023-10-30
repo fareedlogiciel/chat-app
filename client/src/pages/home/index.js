@@ -13,6 +13,7 @@ import send_icon from "./../../assets/send.png";
 import attachment_icon from "./../../assets/attachment.svg";
 import file_icon from "./../../assets/file.svg";
 import close_icon from "./../../assets/close.svg";
+import announce_icon from "./../../assets/announce.png";
 import { Button } from "devextreme-react/button";
 import notify from "devextreme/ui/notify";
 import socketIO from "socket.io-client";
@@ -153,7 +154,10 @@ export default function Home() {
             <div className="user-navbar-container">
               <div className="user-navbar">
                 {isGeneral ? (
-                  <p className="user-name"># General</p>
+                  <div className={"general-info"}>
+                    <img src={announce_icon} alt="" />
+                    <p className="user-name"># General</p>
+                  </div>
                 ) : (
                   <>
                     {otherUser && (

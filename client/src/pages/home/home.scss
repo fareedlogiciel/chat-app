@@ -17,6 +17,16 @@
     padding: 5px 10px;
     height: 55px;
 
+    .general-info {
+      display: flex;
+      align-items: center;
+      img {
+        height: 35px;
+        width: 35px;
+        margin-left: 5px;
+      }
+    }
+
     .rce-avatar-letter {
       margin: 3px;
     }

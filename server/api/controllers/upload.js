@@ -1,6 +1,7 @@
 module.exports.upload_attachment = (req, res) => {
   try {
-    return res.status(201).json({ message: "success", image: req?.file?.path });
+    const path = `${req?.file?.destination}${req?.file?.filename}`;
+    return res.status(201).json({ message: "success", imageUrl: path });
   } catch (err) {
     return res.status(500).json({ message: "Request failed.", err });
   }
