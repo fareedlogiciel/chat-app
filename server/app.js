@@ -15,7 +15,7 @@ const uploadRoutes = require("./api/routes/upload");
 mongoose.connect(MONGO_ATLAS_URI);
 
 //For accessing static files
-app.use("/uploads", express.static("uploads"));
+app.use("/storage", express.static("storage"));
 
 // For logging requests
 app.use(morgan("dev"));
