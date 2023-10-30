@@ -8,8 +8,8 @@ const messageSchema = new mongoose.Schema(
     receiver_id: { type: String, required: true },
     receiver_name: { type: String },
     text: { type: String },
-    chat_type: { type: String },
-    // attachment: { type: mongoose.Schema.Types.Mixed },
+    chat_type: { type: String, required: true },
+    attachment: { type: String },
   },
   { timestamps: true }
 );

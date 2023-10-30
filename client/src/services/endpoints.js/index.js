@@ -4,4 +4,5 @@ export const apiEndpoints = {
   allUsers: "auth/get-users",
   fetchMessages: "messages",
   submitMessage: "messages/new",
+  saveAttachment: "upload",
 };

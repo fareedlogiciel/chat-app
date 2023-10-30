@@ -5,7 +5,7 @@ import MessageInput from "react-input-emoji";
 import ScrollView from "devextreme-react/scroll-view";
 import { SideNavOuterToolbar } from "../../layouts";
 import appInfo from "../../app-info";
-import { fetchMessages } from "../../services/chat";
+import { fetchMessages, saveAttachment } from "../../services/chat";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import LoadIndicator from "devextreme-react/load-indicator";
@@ -56,19 +56,22 @@ export default function Home() {
 
   const handleSubmit = async () => {
     try {
-      // if (user && (text || attachment)) {
-      if (user && text) {
+      if (user && (text || attachment)) {
         const data = {
           sender_id: user?._id,
           sender_name: user?.name,
           receiver_id: isGeneral ? "general" : otherUser?._id,
           receiver_name: otherUser?.name || null,
           chat_type: isGeneral ? "public" : "private",
-          text: text?.trim(),
-          // attachment: attachment || "",
+          text: text?.trim() || null,
+          attachment: null,
         };
-        socket.emit(SocketEvents?.SEND_MESSAGE, data, (res) => {
-          updateMessageList(res);
+        if (attachment) {
+          const filePath = await saveAttachment(attachment);
+          data.attachment = filePath;
+        }
+        socket.emit(SocketEvents?.SEND_MESSAGE, data, (response) => {
+          updateMessageList(response);
         });
         setText("");
         setAttachment(null);
@@ -87,10 +90,17 @@ export default function Home() {
           const formattedMessages = tempMessages?.map((item) => {
             const formattedMessage = {
               type: "text",
+              // type: item?.attachment ? "file" : "text",
               title: item?.sender_name,
               text: item?.text,
               date: item?.createdAt,
               position: item?.sender_id === user?._id ? "right" : "left",
+              //   uri: "https://www.sample-videos.com/pdf/Sample-pdf-5mb.pdf",
+              //   status: {
+              //     download: true,
+              //     click: false,
+              //     loading: 0,
+              //   },
             };
             return formattedMessage;
           });
@@ -107,6 +117,9 @@ export default function Home() {
 
   const updateMessageList = useCallback(
     (data) => {
+      // if (data?.attachment) {
+      //   console.log("data -->", data);
+      // }
       const formattedMessage = {
         type: "text",
         title: data?.sender_name,
@@ -140,7 +153,6 @@ export default function Home() {
 
   useEffect(() => {
     socket.on(SocketEvents.RECEIVE_MESSAGE, (data) => {
-      console.log("data RECEIVE_MESSAGE", data);
       updateMessageList(data);
     });
     return () => socket.off(SocketEvents.RECEIVE_MESSAGE);

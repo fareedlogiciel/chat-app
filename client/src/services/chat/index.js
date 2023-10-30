@@ -30,3 +30,17 @@ export const submitMessage = async (data) => {
     return Promise.reject(err?.response?.data?.message);
   }
 };
+
+export const saveAttachment = async (attachment) => {
+  try {
+    const formData = new FormData();
+    formData.append("attachment", attachment);
+    const withAuth = true;
+    const endpoint = apiEndpoints.saveAttachment;
+    const headers = { "Content-Type": "multipart/form-data" };
+    const response = await postRequest(endpoint, formData, withAuth, headers);
+    return Promise.resolve(response?.data?.filePath);
+  } catch (err) {
+    return Promise.reject("Failed to save attachment!");
+  }
+};
