@@ -42,14 +42,16 @@ socketIO.on(SocketEvents.CONNECTION, (socket) => {
         sender_name: data?.sender_name,
         receiver_id: data?.receiver_id,
         receiver_name: data?.receiver_name || null,
-        text: data?.text,
         chat_type: data?.chat_type,
+        text: data?.text,
         // attachment: data?.attachment,
       });
       const savedMessage = await newMessage?.save();
       if (data?.receiver_id === "general") {
         console.log("savedMessage general", savedMessage);
-        socket?.to("general")?.emit(SocketEvents.RECEIVE_MESSAGE, savedMessage);
+        socketIO
+          ?.in("general")
+          ?.emit(SocketEvents.RECEIVE_MESSAGE, savedMessage);
       } else {
         const receiver = users.find(
           (user) => user?.userId === data?.receiver_id

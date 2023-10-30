@@ -58,12 +58,12 @@ export default function Home() {
       // if (user && (text || attachment)) {
       if (user && text) {
         const data = {
-          text: text?.trim(),
           sender_id: user?._id,
           sender_name: user?.name,
           receiver_id: isGeneral ? "general" : otherUser?._id,
           receiver_name: otherUser?.name || null,
           chat_type: isGeneral ? "public" : "private",
+          text: text?.trim(),
           // attachment: attachment || "",
         };
         socket.emit(SocketEvents?.SEND_MESSAGE, data, (res) => {
