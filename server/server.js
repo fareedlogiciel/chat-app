@@ -48,7 +48,6 @@ socketIO.on(SocketEvents.CONNECTION, (socket) => {
       });
       const savedMessage = await newMessage?.save();
       if (data?.receiver_id === "general") {
-        console.log("savedMessage general", savedMessage);
         socketIO
           ?.in("general")
           ?.emit(SocketEvents.RECEIVE_MESSAGE, savedMessage);
