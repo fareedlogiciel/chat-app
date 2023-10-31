@@ -14,13 +14,13 @@ import announce from "./../../assets/announce.png";
 export default function SideNavigationMenu(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { children } = props;
+  const { children, isLarge, setMenuStatus } = props;
   const { users, loadingUsers } = useSelector((state) => state?.app);
   const { user } = useSelector((state) => state?.auth);
 
   const formattedConversation = useMemo(() => {
     const tempConversations = [];
-    users?.forEach((item, i) => {
+    users?.forEach((item) => {
       const conversationItem = {
         letterItem: {
           letter: item?.name?.at(0),
@@ -75,6 +75,7 @@ export default function SideNavigationMenu(props) {
                   dataSource={formattedConversation}
                   onClick={(item) => {
                     navigate(`/chat/${item?.id}`);
+                    setMenuStatus(isLarge ? 2 : 1);
                   }}
                 />
               )}
