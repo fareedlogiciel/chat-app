@@ -35,7 +35,6 @@ socketIO.on(SocketEvents.CONNECTION, (socket) => {
 
   // Send message listener
   socket.on(SocketEvents.SEND_MESSAGE, async (data, callback) => {
-    console.log("data", data);
     try {
       const newMessage = new Message({
         _id: new mongoose.Types.ObjectId(),

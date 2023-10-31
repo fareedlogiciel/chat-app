@@ -7,7 +7,7 @@ import { SideNavOuterToolbar } from "../../layouts";
 import appInfo from "../../app-info";
 import { fetchMessages, saveAttachment } from "../../services/chat";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import LoadIndicator from "devextreme-react/load-indicator";
 import send_icon from "./../../assets/send.png";
 import attachment_icon from "./../../assets/attachment.svg";
@@ -19,10 +19,15 @@ import notify from "devextreme/ui/notify";
 import socketIO from "socket.io-client";
 import { SocketEvents } from "./../../socket-events";
 import { openLinkInNewTab } from "../../utils";
+import {
+  REACT_APP_MEDIA_BASE_URL,
+  REACT_APP_SOCKET_URL,
+} from "../../env-constants";
 
-const socket = socketIO.connect("http://localhost:4000");
+const socket = socketIO.connect(REACT_APP_SOCKET_URL);
 
 export default function Home() {
+  const navigate = useNavigate();
   const attachmentRef = useRef();
   const { otherUserId } = useParams();
   const isGeneral = otherUserId === "general";
@@ -34,6 +39,17 @@ export default function Home() {
   const [messages, setMessages] = useState([]);
   const [otherUser, setOtherUser] = useState();
   const [attachment, setAttachment] = useState(null);
+
+  const handleViewFile = useCallback((item) => {
+    openLinkInNewTab(`${REACT_APP_MEDIA_BASE_URL}/${item?.data?.uri}`);
+  }, []);
+
+  const handleTitleClick = useCallback(
+    (item) => {
+      navigate(`/chat/${item?.sender_id}`);
+    },
+    [navigate]
+  );
 
   const openAttachment = () => {
     openLinkInNewTab(URL.createObjectURL(attachment));
@@ -89,19 +105,22 @@ export default function Home() {
         if (tempMessages && tempMessages?.length) {
           const formattedMessages = tempMessages?.map((item) => {
             const formattedMessage = {
-              type: "text",
-              // type: item?.attachment ? "file" : "text",
+              type: item?.attachment ? "file" : "text",
               title: item?.sender_name,
               text: item?.text,
               date: item?.createdAt,
               position: item?.sender_id === user?._id ? "right" : "left",
-              //   uri: "https://www.sample-videos.com/pdf/Sample-pdf-5mb.pdf",
-              //   status: {
-              //     download: true,
-              //     click: false,
-              //     loading: 0,
-              //   },
+              sender_id: item?.sender_id,
             };
+            if (item?.attachment) {
+              formattedMessage.data = {
+                uri: item?.attachment,
+                status: {
+                  download: true,
+                  click: true,
+                },
+              };
+            }
             return formattedMessage;
           });
           setMessages(structuredClone(formattedMessages));
@@ -117,16 +136,23 @@ export default function Home() {
 
   const updateMessageList = useCallback(
     (data) => {
-      // if (data?.attachment) {
-      //   console.log("data -->", data);
-      // }
       const formattedMessage = {
-        type: "text",
+        type: data?.attachment ? "file" : "text",
         title: data?.sender_name,
         text: data?.text,
         date: data?.createdAt,
         position: data?.sender_id === user?._id ? "right" : "left",
+        sender_id: data?.sender_id,
       };
+      if (data?.attachment) {
+        formattedMessage.data = {
+          uri: data?.attachment,
+          status: {
+            download: true,
+            click: true,
+          },
+        };
+      }
       setMessages((prev) => {
         return [...prev, { ...formattedMessage }];
       });
@@ -203,6 +229,8 @@ export default function Home() {
                     <>
                       {messages?.length ? (
                         <MessageList
+                          onOpen={handleViewFile}
+                          onTitleClick={handleTitleClick}
                           className="content-block message-list"
                           lockable={true}
                           toBottomHeight={"100%"}
