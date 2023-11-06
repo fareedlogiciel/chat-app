@@ -20,10 +20,14 @@ export default function CreateAccountForm() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const formData = useRef({
-    username: "Test ",
-    email: "test@gmail.com",
-    password: "12345678",
-    confirmedPassword: "12345678",
+    // username: "Test ",
+    // email: "test@gmail.com",
+    // password: "12345678",
+    // confirmedPassword: "12345678",
+    username: "",
+    email: "",
+    password: "",
+    confirmedPassword: "",
   });
   const usernameEditorOptions = {
     stylingMode: "filled",

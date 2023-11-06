@@ -28,7 +28,8 @@ export default function SideNavigationMenu(props) {
         },
         title: item?.name,
         subtitle: "Click to start chat, or view chat history!",
-        date: item?.createdAt,
+        date: null,
+        // date: item?.createdAt,
         id: item?._id,
       };
       if (conversationItem?.id !== user?._id) {

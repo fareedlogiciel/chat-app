@@ -20,7 +20,8 @@ export default function LoginForm() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const formData = useRef({ email: "test1@gmail.com", password: "12345678" });
+  const formData = useRef({ email: "", password: "" });
+  // const formData = useRef({ email: "test1@gmail.com", password: "12345678" });
 
   const onSubmit = async (e) => {
     try {
